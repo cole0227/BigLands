@@ -20,9 +20,10 @@ class Screen(object):
 
 	def update(self, delta):
 
-		for button in self.m_buttons
-
+		pass
 
 	def draw(self):
 
-		pass
+		for button in self.m_buttons
+
+			pass
