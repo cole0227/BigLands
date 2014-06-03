@@ -10,7 +10,7 @@ class button(object):
 
 	def ___init___(self,text,rect):
 
-		self.m_text = globals.basic_font[3].render(text),1,(240,220,200))
+		self.m_text = globals.basic_font[3].render(text,1,(240,220,200))
 		self.m_rect = rect
 
 	def draw(self):
@@ -34,6 +34,6 @@ class Screen(object):
 
 	def draw(self):
 
-		for button in self.m_buttons
+		for button in self.m_buttons:
 
 			button.draw()
