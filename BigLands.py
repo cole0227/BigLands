@@ -8,6 +8,7 @@ from spritesheet import SpriteSheet
 from roman import *
 import globals
 import game_object
+import screen
 
 def main_input():
 
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     pygame.init()
     random.seed()
 
-    windowSurface = pygame.display.set_mode((globals.screen_resolution[0],globals.screen_resolution[1]), 0, 32) 
+    globals.window_surface = pygame.display.set_mode((globals.screen_resolution[0],globals.screen_resolution[1]), 0, 32) 
     pygame.display.set_caption(globals.game_name)
 
     main_init()

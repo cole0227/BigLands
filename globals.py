@@ -16,3 +16,18 @@ game_name = "Big Lands"
 
 global id_game_object
 id_game_object = 0;
+
+global window_surface
+
+window_surface = None
+
+
+global basic_font
+basic_font = []
+for i in range (0, 7):
+    basic_font.append(pygame.font.SysFont("Arial", i*4))
+
+global heavy_font
+heavy_font = []
+for i in range (0, 7):
+    heavy_font.append(pygame.font.SysFont("Arial Black", i*4))

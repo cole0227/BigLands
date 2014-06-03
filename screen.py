@@ -6,6 +6,16 @@ from pygame.locals import *
 
 import globals
 
+class button(object):
+
+	def ___init___(self,text,rect):
+
+		self.m_text = globals.basic_font[3].render(text),1,(240,220,200))
+		self.m_rect = rect
+
+	def draw(self):
+		
+		globals.window_surface.blit(self.text,rect[:2])
 
 class Screen(object):
 
@@ -26,4 +36,4 @@ class Screen(object):
 
 		for button in self.m_buttons
 
-			pass
+			button.draw()
