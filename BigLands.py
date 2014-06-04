@@ -13,6 +13,7 @@ from roman import *
 import globals
 from game_object import *
 from screen import *
+from game import *
 
 
 def main_init():
@@ -37,7 +38,8 @@ def main_init():
     globals.screens["Main Menu"].add_button(Button("Play",(60,100,70,45),game_screen,4))
     globals.screens["Main Menu"].add_button(Button("Quit",(60,150,70,45),main_quit,4))
     globals.current_screen = "Main Menu"
-    Screen("Game").add()
+    Game("Game").add()
+    globals.screens["Game"].add_button(Button("Big Lands",(20,20,1,1),game_screen,6))
 
 def main_quit():
 
