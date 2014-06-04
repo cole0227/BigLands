@@ -40,6 +40,10 @@ def main_init():
     globals.current_screen = "Main Menu"
     Game("Game").add()
     globals.screens["Game"].add_button(Button("Big Lands",(20,20,1,1),game_screen,6))
+    globals.screens["Game"].add_object(Game_Object((0,0),"Mah Object"))
+
+    #Load in Sprites:
+    globals.sprite_cube = pygame.transform.scale(pygame.image.load('Assets/GreenBox.png'), (10, 10)).convert_alpha()
 
 def main_quit():
 

@@ -5,6 +5,9 @@ import pygame.time
 import pygame.font
 from pygame.locals import *
 
+pygame.init()
+pygame.font.init()
+pygame.display.init()
 
 global screen_resolution
 screen_resolution = (random.randint(1024,1680),random.randint(768,1050))
@@ -24,7 +27,6 @@ id_game_object = 0;
 global window_surface
 window_surface = None
 
-pygame.font.init()
 global basic_font
 basic_font = []
 for i in range (0, 7):
@@ -39,3 +41,6 @@ current_screen = 0
 
 global screens
 screens = {}
+
+global sprite_cube
+sprite_cube = None

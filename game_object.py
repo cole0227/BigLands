@@ -6,7 +6,7 @@ from pygame.locals import *
 
 import globals
 
-class GameObject(object):
+class Game_Object(object):
 
     def __init__(self,pos=(0,0),name="An Object"):
         
@@ -32,7 +32,7 @@ class GameObject(object):
 
     def draw(self):
         
-        windowSurface.blit(g_sprite_cube, (self.m_pos[0]+23,self.m_pos[1]+23))
+        globals.window_surface.blit(globals.sprite_cube, (self.m_pos[0]+23,self.m_pos[1]+23))
 
     def update(self, delta):
 
