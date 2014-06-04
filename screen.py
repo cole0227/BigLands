@@ -27,8 +27,6 @@ class Button(object):
 
         if(event.type == pygame.MOUSEBUTTONDOWN):
 
-            print event.pos, "/", self.m_rect
-
             if(event.pos[0] > self.m_rect[0] and event.pos[0] < self.m_rect[2] + self.m_rect[0]):
 
                 if(event.pos[1] > self.m_rect[1] and event.pos[1] < self.m_rect[3] + self.m_rect[1]):

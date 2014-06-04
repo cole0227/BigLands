@@ -38,7 +38,7 @@ class GameObject(object):
 
         pass
 
-    def mouse_event(self,event):
+    def input(self,event):
 
         pass
 
