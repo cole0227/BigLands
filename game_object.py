@@ -42,6 +42,6 @@ class GameObject(object):
 
         pass
 
-    def ___str___(self):
+    def __str__(self):
 
     	return self.m_name
