@@ -15,6 +15,7 @@ class Game(Screen):
 
         Screen.__init__(self, name)
         self.m_game_objects = []
+        self.add_object(Game_Object((10,100),"Mah Object"))
 
     def add_object(self, game_object):
 
