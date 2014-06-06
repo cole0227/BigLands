@@ -4,37 +4,23 @@ import globals
 
 class Timer(object):
 
-	def __init__(self, time):
+    def __init__(self, period):
 
-		self.time = time
-		self.current = time
+        self.time = period
+        self.current = time.clock()
 
-	def update(self, delta):
+    def test(self):
 
-		self.current -= delta
+        return (self.current + self.time >= time.clock())
 
-		return self.current
+    def get(self):
 
-	def test(self):
+        return time.clock()-self.current
 
-		return (self.current <= 0)
+    def set(self, time):
 
-	def retest(self):
+        self.time = time
 
-		if(self.current <= 0):
-			self.current = self.time
+    def __str__(self):
 
-		return self.test()
-
-
-	def reset(self):
-
-		self.current = self.time
-
-	def set(self, time):
-
-		self.time = time
-
-	def __str__(self):
-
-		return str(self.current)+"/"+str(self.time)
+        return str(self.current)+"/"+str(self.time)

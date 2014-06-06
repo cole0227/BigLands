@@ -8,6 +8,7 @@ from pygame.locals import *
 import globals
 from screen import *
 from game_object import *
+from sprite_sheet import *
 
 class Game(Screen):
 
@@ -15,7 +16,11 @@ class Game(Screen):
 
         Screen.__init__(self, name)
         self.m_game_objects = []
-        self.add_object(Game_Object((10,100),"Mah Object"))
+        self.add_object(Game_Object([100,100]))
+        self.add_object(Game_Actor([random.randint(0,300),random.randint(0,300)],"Dude1",pygame.image.load(random_icon()),random.randint(1,300)))
+        self.add_object(Game_Actor([random.randint(0,300),random.randint(0,300)],"Dude1",pygame.image.load(random_icon()),random.randint(1,300)))
+        self.add_object(Game_Actor([random.randint(0,300),random.randint(0,300)],"Dude1",pygame.image.load(random_icon()),random.randint(1,300)))
+
 
     def add_object(self, game_object):
 
@@ -31,7 +36,7 @@ class Game(Screen):
     def update(self, delta):
 
         for obj in self.m_game_objects:
-            obj.input(delta)
+            obj.update(delta)
 
         Screen.update(self, delta)
 

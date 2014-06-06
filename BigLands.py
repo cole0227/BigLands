@@ -1,6 +1,7 @@
 import sys
 import random
 import copy
+import time
 
 import pygame
 from pygame.locals import *
@@ -8,12 +9,13 @@ from pygame.locals import *
 import pygame.time
 import pygame.font
 
-from spritesheet import SpriteSheet
-from roman import *
 import globals
+from sprite_sheet import *
+from roman import *
 from game_object import *
 from screen import *
 from game import *
+from timer import *
 
 
 def main_init():
@@ -24,24 +26,31 @@ def main_init():
     def nothing():
         pass
 
+    #core initiation
     pygame.init()
     pygame.font.init()
     random.seed()
 
+    #set up the window
     globals.window_surface = pygame.display.set_mode((globals.screen_resolution[0],globals.screen_resolution[1]), 0, 32) 
     pygame.display.set_caption(globals.game_name)
+
+    #Load in Sprites:
+    globals.sprite_cube = pygame.image.load('Assets/GreenBox.png').convert_alpha()
+    globals.sprite_icon = pygame.image.load(random_icon())
+    globals.sprite_icon.convert_alpha()
+    globals.sprite_icon.set_colorkey((0,0,0))
+    print "Loaded Sprites"
 
     # Make the Screens
     Screen("Main Menu").add()
 
-    globals.screens["Main Menu"].add_button(Button("Big Lands",(20,20,1,1),game_screen,6))
+    globals.screens["Main Menu"].add_button(Button("Big Lands",(20,20,1,1),game_screen,7))
     globals.screens["Main Menu"].add_button(Button("Play",(60,100,70,45),game_screen,4))
     globals.screens["Main Menu"].add_button(Button("Quit",(60,150,70,45),main_quit,4))
     globals.current_screen = "Main Menu"
     Game("Game").add()
-
-    #Load in Sprites:
-    globals.sprite_cube = pygame.transform.scale(pygame.image.load('Assets/GreenBox.png'), (10, 10)).convert_alpha()
+    print "Finished Init"
 
 def main_quit():
 
@@ -78,7 +87,11 @@ def main_game_loop():
 
     clock = pygame.time.Clock()
 
+    util = 0
+    last = time.clock()
+
     while( True ):
+
 
         clock.tick(globals.frame_rate)
 
@@ -86,11 +99,18 @@ def main_game_loop():
 
         if(globals.game_pause == False):
             
-            globals.screens[globals.current_screen].update(clock.get_time())
+            globals.screens[globals.current_screen].update(clock.get_time()/1000.0)
 
         globals.window_surface.fill((0,0,100))
         globals.screens[globals.current_screen].draw()
         pygame.display.update()
+
+        util =+ clock.get_rawtime()/1000.0
+        if (last<time.clock()-5):
+            print "Utilization:",float(int(10000.0/(time.clock()-last)*util))/100,"%"
+            util = 0
+            last = time.clock()
+
 
 if __name__ == '__main__':
 

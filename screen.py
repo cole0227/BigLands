@@ -11,12 +11,14 @@ class Button(object):
     def __init__(self,text,rect, action, size=5):
 
         self.m_text = globals.basic_font[size].render(text,1,(240,220,200))
+        self.m_shadow = globals.basic_font[size].render(text,1,(0,0,0))
         self.m_name = text
         self.m_rect = rect
         self.m_action = action
 
     def draw(self):
 
+        globals.window_surface.blit(self.m_shadow,(self.m_rect[0]+2,self.m_rect[1]+2))
         globals.window_surface.blit(self.m_text,self.m_rect[:2])
 
     def act(self):

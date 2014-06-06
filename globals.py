@@ -1,4 +1,7 @@
 import random
+import glob
+import os
+
 
 import pygame
 import pygame.time
@@ -29,11 +32,11 @@ window_surface = None
 
 global basic_font
 basic_font = []
-for i in range (0, 7):
+for i in range (0, 12):
     basic_font.append(pygame.font.SysFont("Arial", i*7+12))
 global heavy_font
 heavy_font = []
-for i in range (0, 7):
+for i in range (0, 12):
     heavy_font.append(pygame.font.SysFont("Arial Black", i*7+12))
 
 global current_screen
@@ -44,3 +47,13 @@ screens = {}
 
 global sprite_cube
 sprite_cube = None
+
+global sprite_icon
+sprite_icon = None
+
+global icon_list
+icon_list = []
+prev = os.getcwd()
+os.chdir("Assets/Game-Icons")
+icon_list.extend(glob.glob("*.png"))
+os.chdir(prev)
