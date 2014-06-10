@@ -33,11 +33,11 @@ window_surface = None
 global basic_font
 basic_font = []
 for i in range (0, 12):
-    basic_font.append(pygame.font.SysFont("Arial", i*7+12))
+    basic_font.append(pygame.font.SysFont("Motorwerk", i*7+12))
 global heavy_font
 heavy_font = []
 for i in range (0, 12):
-    heavy_font.append(pygame.font.SysFont("Arial Black", i*7+12))
+    heavy_font.append(pygame.font.SysFont("Motorwerk", i*7+12))
 
 global current_screen
 current_screen = 0
