@@ -19,7 +19,7 @@ class Tile(object):
 
     def __init__(self, index, surface):
 
-        self.m_index = index
+        self.i = index
         self.m_surface = surface
 
     def get(self):
@@ -37,13 +37,80 @@ class Tile_Map(object):
         self.m_height_map = map_generation.matrix_scale(height_map,0,100)
         self.m_water_map = numpy.array(water_map)
         
-        self.m_height_map = scipy.ndimage.zoom(self.m_height_map, max(width+1,height+1)/(self.m_height_map.size)**0.5, order=4)
-        self.m_water_map = scipy.ndimage.zoom(self.m_water_map, max(width+1,height+1)/(self.m_water_map.size)**0.5, order=4)
+        print self.m_height_map.shape,"/",self.m_water_map.shape
+        self.m_height_map = scipy.ndimage.zoom(self.m_height_map, (max(width+1.0,height+1.0)**2/self.m_height_map.size)**0.5, order=4)
+        self.m_water_map = scipy.ndimage.zoom(self.m_water_map, (max(width+1.0,height+1.0)**2/self.m_water_map.size)**0.5, order=4)
+        print self.m_height_map.shape,"/",self.m_water_map.shape
 
         self.m_map = defaultdict(lambda  : defaultdict(list))
-        self.fill()
+        print len(self.m_map),',',len(self.m_map[0])
+        self.march()
 
-    def fill(self):
+    def march(self):
+
+        typemap = numpy.zeros((self.m_width,self.m_height))
+
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+
+                if(self.m_water_map[x][y] > 1.0):
+
+                    if(self.m_height_map[y][x]>88):
+                        typemap[x][y]=3 # light rock
+
+                    elif(self.m_height_map[y][x]>75):
+                        typemap[x][y]=2 # dark rock
+
+                    elif(self.m_height_map[y][x]>65):
+                        typemap[x][y]=5 # jungle
+
+                    elif(self.m_height_map[y][x]>32):
+                        typemap[x][y]=4 # grass
+
+                    elif(self.m_height_map[y][x]>22):
+                        typemap[x][y]=6 # dirt
+
+                    elif(self.m_height_map[y][x]>15):
+                        typemap[x][y]=1 # gravel
+
+                    else:
+                        typemap[x][y]=7 # beach
+
+                elif(self.m_water_map[x][y] > 0.95):
+                    typemap[x][y]=8 # shallow water
+
+                else:
+                    typemap[x][y]=9 # deep water
+
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                surf = pygame.Surface((self.m_tile_size,self.m_tile_size))
+                surf.fill((255,0,255))
+                self.m_map[x][y].append(Tile(-1,surf))
+
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+
+                tid = typemap[x][y]
+
+                if( typemap[x][y] != -1):
+
+                    surf = self.m_sprite_sheet.image_by_index(750,tid)
+                    posn = [(x*self.m_tile_size)%750,(y*self.m_tile_size)%750,self.m_tile_size,self.m_tile_size]
+
+                    self.m_map[x][y][0].get().blit(surf,(0, 0),area=posn)
+
+                    #covers the edge cases where it needs to tile
+                    if(posn[0] + posn[2] >= 750):
+                        self.m_map[x][y][0].get().blit(surf,(750, 0),area=posn)
+
+                        if(posn[1] + posn[3] >= 750):
+                            self.m_map[x][y][0].get().blit(surf,(750,750),area=posn)
+
+                    if(posn[1] + posn[3] >= 750):
+                        self.m_map[x][y][0].get().blit(surf,(0,750),area=posn)
+
+    def __old_march(self):
 
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
@@ -63,12 +130,14 @@ class Tile_Map(object):
 
     def draw(self):
 
+        surf = pygame.Surface((1024,1024))
+
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
                 for tile in self.m_map[x][y]:
-                    globals.window_surface.blit(
-                        tile.get(),
-                        (x*self.m_tile_size,y*self.m_tile_size))
+                    surf.blit(tile.get(), (x*self.m_tile_size,y*self.m_tile_size))
+
+        return surf
 
 
 
@@ -82,21 +151,24 @@ if __name__ == '__main__':
     globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
     pygame.display.set_caption("Tile Test")
 
-    w = map_generation.CA_CaveFactory(128, 32, 0.55).gen_map()
-    h = map_generation.perlin_main(256, 80, 10, 7)
-    #h = map_generation.perlin_main(128, 40, 14, 10)
-    #h = map_generation.perlin_main(20, 0, 1, 3)
+    w = map_generation.CA_CaveFactory(32, 32, 0.55).gen_map()
+    #h = map_generation.perlin_main(256, 80, 10, 7)
+    h = map_generation.perlin_main(128, 40, 14, 10)
+    #h = map_generation.perlin_main(32, 0, 1, 3)
 
+    #t = Tile_Map(h, w, "Assets/Textures.png", 16, 16, 64)
     #t = Tile_Map(h, w, "Assets/Textures.png", 64, 64, 16)
-    #t = Tile_Map(h, w, "Assets/Textures.png", 256, 256, 4)
-    t = Tile_Map(h, w, "Assets/Textures.png", 512, 512, 2)
+    #t = Tile_Map(h, w, "Assets/Textures.png", 128, 128, 8)
+    t = Tile_Map(h, w, "Assets/Textures.png", 256, 256, 4)
+    rm = t.draw()
 
     
     i = 0
     while(True):
         i+=1
         wall = time.time()
-        t.draw()
+
+        globals.window_surface.blit(rm,(0,0))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == QUIT:
