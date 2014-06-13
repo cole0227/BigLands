@@ -3,6 +3,7 @@ import sys
 import random
 from collections import defaultdict
 
+import numpy
 import scipy
 import scipy.ndimage
 import pygame
@@ -34,13 +35,11 @@ class Tile_Map(object):
         self.m_tile_size = tile_size
         self.m_sprite_sheet = Sprite_Sheet(tileset_image)
         self.m_height_map = map_generation.matrix_scale(height_map,0,100)
-        self.m_water_map = water_map
+        self.m_water_map = numpy.array(water_map)
         
-        map_generation.imsave(str(h.size)+".png",h,True)
-        
-        self.m_height_map = scipy.ndimage.zoom(self.m_height_map, max(width+1,height+1)/(self.m_height_map.size)**0.5, order=0)
-        map_generation.imsave(str(self.m_height_map.size)+".png",self.m_height_map,True)
-        
+        self.m_height_map = scipy.ndimage.zoom(self.m_height_map, max(width+1,height+1)/(self.m_height_map.size)**0.5, order=4)
+        self.m_water_map = scipy.ndimage.zoom(self.m_water_map, max(width+1,height+1)/(self.m_water_map.size)**0.5, order=4)
+
         self.m_map = defaultdict(lambda  : defaultdict(list))
         self.fill()
 
@@ -66,6 +65,8 @@ class Tile_Map(object):
                         (x*self.m_tile_size,y*self.m_tile_size))
 
 
+
+
 if __name__ == '__main__':
 
     #core initiation
@@ -75,10 +76,10 @@ if __name__ == '__main__':
     globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
     pygame.display.set_caption("Tile Test")
 
-    w = map_generation.CA_CaveFactory(64, 64,0.55).gen_map()
-    h = map_generation.perlin_main(128, 20, 10, 6)
-    #h = map_generation.perlin_main(128, 5, 1, 3)
-    t = Tile_Map(h, w, "Assets/Huge Tileset.png",64,64, 16)
+    w = map_generation.CA_CaveFactory(150, 150, 0.55).gen_map()
+    h = map_generation.perlin_main(128, 40, 14, 10)
+    #h = map_generation.perlin_main(20, 0, 1, 3)
+    t = Tile_Map(h, w, "Assets/Huge Tileset.png", 256, 256, 4)
     
     i = 0
     while(True):
@@ -93,9 +94,11 @@ if __name__ == '__main__':
             elif event.type == KEYDOWN:
 
                 if(event.key == K_ESCAPE):
-
                     pygame.quit() 
                     sys.exit()
+                elif(event.key == K_F1):
+                    h = map_generation.perlin_main(128, 20, 10, 6)
+                    t = Tile_Map(h, w, "Assets/Huge Tileset.png",64,64, 16)
         if(i>100):
             print "Delta:",(time.time()-wall)
             i=0
