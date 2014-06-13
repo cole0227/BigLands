@@ -1,7 +1,8 @@
 import time
+import sys
 import random
+from collections import defaultdict
 
-from numpy import *
 import scipy
 import scipy.ndimage
 import pygame
@@ -9,48 +10,92 @@ from pygame.locals import *
 import pygame.time
 import pygame.font
 
-import sprite_sheet
+from sprite_sheet import *
 import globals
 import map_generation
 
 class Tile(object):
 
-	def __init__(self, index):
+    def __init__(self, index, surface):
 
-		self.m_index = index
+        self.m_index = index
+        self.m_surface = surface
 
-	def get(self):
+    def get(self):
 
-		return self.m_index
+        return self.m_surface
 
 class Tile_Map(object):
 
-	def __init__(self, height_map, tileset_image, width, height):
+    def __init__(self, height_map, water_map, tileset_image, width, height, tile_size):
 
-		self.m_tileset_image = tileset_image
-		self.m_height_map = map_generation.matrix_scale(height_map,0,100)
-		
-		map_generation.imsave(str(h.size)+".png",h,True)
-		
-		self.m_height_map = scipy.ndimage.zoom(self.m_height_map, max(width+1,height+1)/(self.m_height_map.size)**0.5, order=0)
-		map_generation.imsave(str(self.m_height_map.size)+".png",self.m_height_map,True)
-		
-		self.m_map = zeros((width,height))
+        self.m_width = width
+        self.m_height = height
+        self.m_tile_size = tile_size
+        self.m_sprite_sheet = Sprite_Sheet(tileset_image)
+        self.m_height_map = map_generation.matrix_scale(height_map,0,100)
+        self.m_water_map = water_map
+        
+        map_generation.imsave(str(h.size)+".png",h,True)
+        
+        self.m_height_map = scipy.ndimage.zoom(self.m_height_map, max(width+1,height+1)/(self.m_height_map.size)**0.5, order=0)
+        map_generation.imsave(str(self.m_height_map.size)+".png",self.m_height_map,True)
+        
+        self.m_map = defaultdict(lambda  : defaultdict(list))
+        self.fill()
 
-		for row in self.m_map:
-			for cell in row:
-				cell = []
+    def fill(self):
 
-	def draw(self):
-		globals.window_surface.blit()
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                if(self.m_water_map[y][x] > 1):
+                    tid = 21+15*int(self.m_height_map[y][x]/12)
+                    self.m_map[x][y].append(Tile(tid,pygame.transform.scale(self.m_sprite_sheet.image_by_index(128,tid)
+                            ,(self.m_tile_size,self.m_tile_size))))
+                else:
+                    self.m_map[x][y].append(Tile(6,pygame.transform.scale(self.m_sprite_sheet.image_by_index(128,6)
+                            ,(self.m_tile_size,self.m_tile_size))))
 
-#core initiation
-pygame.init()
-pygame.font.init()
-random.seed()
-globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32) 
-pygame.display.set_caption("Tile Test")
+    def draw(self):
 
-#h = map_generation.perlin_main(128, 20, 10, 6)
-h = map_generation.perlin_main(128, 5, 1, 3)
-t = Tile_Map(h, "Assets/Huge Tileset.png",16,16)
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                for tile in self.m_map[x][y]:
+                    globals.window_surface.blit(
+                        tile.get(),
+                        (x*self.m_tile_size,y*self.m_tile_size))
+
+
+if __name__ == '__main__':
+
+    #core initiation
+    pygame.init()
+    pygame.font.init()
+    random.seed()
+    globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
+    pygame.display.set_caption("Tile Test")
+
+    w = map_generation.CA_CaveFactory(64, 64,0.55).gen_map()
+    h = map_generation.perlin_main(128, 20, 10, 6)
+    #h = map_generation.perlin_main(128, 5, 1, 3)
+    t = Tile_Map(h, w, "Assets/Huge Tileset.png",64,64, 16)
+    
+    i = 0
+    while(True):
+        i+=1
+        wall = time.time()
+        t.draw()
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit() 
+                sys.exit()
+            elif event.type == KEYDOWN:
+
+                if(event.key == K_ESCAPE):
+
+                    pygame.quit() 
+                    sys.exit()
+        if(i>100):
+            print "Delta:",(time.time()-wall)
+            i=0

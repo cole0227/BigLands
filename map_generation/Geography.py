@@ -1125,6 +1125,8 @@ def clean_main(size, mountains, num_layers, erosion):
 
     print "Total Time:",time()-wall2
 
+    return main.heightmap()
+
 def perlin_main(size, mountains, num_layers, erosion):
     wall = time()
     wall2 = time()
@@ -1207,9 +1209,13 @@ def perlin_main(size, mountains, num_layers, erosion):
 
 if(__name__ == '__main__'):
 
+    
+
+    global debug
+    debug = True
     #profile.run("main()")
     #main(50)
     #clean_main(4096, 2000,10,10)
-    #clean_main(1024, 1000,10,10)
+    clean_main(1024, 1000,10,10)
     #clean_main(256, 75, 10, 10)
-    perlin_main(128, 20, 10, 6)
+    #perlin_main(128, 20, 10, 6)

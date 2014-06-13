@@ -9,7 +9,7 @@ import random
 # Note: When calling images_at the rect is the format:
 # (x, y, x + offset, y + offset)
  
-class SpriteSheet(object):
+class Sprite_Sheet(object):
     def __init__(self, filename):
         try:
             self.sheet = pygame.image.load(filename).convert()
