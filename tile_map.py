@@ -65,11 +65,11 @@ class Tile_Map(object):
 
     def march(self):
 
-        self.m_typemap = numpy.zeros((self.m_width,self.m_height))
+        self.m_typemap = numpy.zeros((self.m_width+1,self.m_height+1))
 
         print "Typing..."
-        for x in range(0,self.m_width):
-            for y in range(0,self.m_height):
+        for x in range(0,self.m_width+1):
+            for y in range(0,self.m_height+1):
 
                 if(self.m_water_map[x][y] > 1.0):
 
@@ -106,28 +106,46 @@ class Tile_Map(object):
                 surf.fill((255,0,255))
                 self.m_map[x][y].append(Tile(-1,surf))
 
+        print "Caching"
+        surf = []
+        for i in range(0,10):
+            surf.append(self.m_sprite_sheet.image_by_index(750,i).convert_alpha())
+
+        masks = []
+        for i in range(0,16):
+            masks.append(pygame.transform.scale(self.m_masks.image_by_index(250,i).convert_alpha(),(self.m_tile_size,self.m_tile_size)))
+            globals.window_surface.blit(masks[i],(i*32,0))
+
         print "Blitting..."
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
+                for tid in range(9, -1, -1):
 
-                tid = self.m_typemap[x][y]
+                    ma = self.march_assist(x,y,tid)
 
-                if( self.m_typemap[x][y] != -1):
+                    if(ma != 0):
 
-                    surf = self.m_sprite_sheet.image_by_index(750,tid)
-                    posn = [(x*self.m_tile_size)%750,(y*self.m_tile_size)%750,self.m_tile_size,self.m_tile_size]
+                        print x,y,tid
 
-                    self.m_map[x][y][0].get().blit(surf,(0, 0),area=posn)
+                        mask_surface = masks[ma].copy()
 
-                    #covers the edge cases where it needs to tile
-                    if(posn[0] + posn[2] >= 750):
-                        self.m_map[x][y][0].get().blit(surf,(750-posn[0], 0),area=posn)
+                        if( self.m_typemap[x][y] != -1):
 
-                        if(posn[1] + posn[3] >= 750):
-                            self.m_map[x][y][0].get().blit(surf,(750-posn[0],750-posn[1]),area=posn)
+                            posn = [(x*self.m_tile_size)%750,(y*self.m_tile_size)%750,self.m_tile_size,self.m_tile_size]
 
-                    if(posn[1] + posn[3] >= 750):
-                        self.m_map[x][y][0].get().blit(surf,(0,750-posn[1]),area=posn)
+                            mask_surface.blit(surf[tid],(0, 0),area = posn, special_flags = pygame.BLEND_ADD)
+
+                            #covers the edge cases where it needs to tile
+                            if(posn[0] + posn[2] >= 750):
+                                mask_surface.blit(surf[tid],(posn[2], 0),area = posn, special_flags = pygame.BLEND_ADD)
+
+                                if(posn[1] + posn[3] >= 750):
+                                    mask_surface.blit(surf[tid],(posn[2],posn[3]),area = posn, special_flags = pygame.BLEND_ADD)
+
+                            if(posn[1] + posn[3] >= 750):
+                                mask_surface.blit(surf[tid],(0,posn[3]),area = posn, special_flags = pygame.BLEND_ADD)
+
+                            self.m_map[x][y][0].get().blit(mask_surface,masks[ma].get_rect())
 
     def __old_march(self):
 
@@ -150,7 +168,12 @@ class Tile_Map(object):
     def draw(self):
 
         surf = pygame.Surface((1024,1024))
-
+        
+        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(  0,  0))
+        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(750,  0))
+        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(  0,750))
+        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(750,750))
+        
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
                 for tile in self.m_map[x][y]:
@@ -172,8 +195,8 @@ if __name__ == '__main__':
 
     w = map_generation.CA_CaveFactory(32, 32, 0.55).gen_map()
     #h = map_generation.perlin_main(256, 80, 10, 7)
-    h = map_generation.perlin_main(128, 40, 14, 10)
-    #h = map_generation.perlin_main(32, 0, 1, 3)
+    #h = map_generation.perlin_main(128, 40, 14, 10)
+    h = map_generation.perlin_main(32, 0, 1, 3)
 
     #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 16, 16, 64)
     t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 64, 64, 16)
@@ -183,9 +206,11 @@ if __name__ == '__main__':
 
     
     i = 0
+    clock = pygame.time.Clock()
     while(True):
-        i+=1
+        clock.tick(60)
         wall = time.time()
+        i+=1
 
         globals.window_surface.blit(rm,(0,0))
         pygame.display.update()
@@ -201,6 +226,6 @@ if __name__ == '__main__':
                 elif(event.key == K_F1):
                     h = map_generation.perlin_main(128, 20, 10, 6)
                     t = Tile_Map(h, w, "Assets/Huge Tileset.png",64,64, 16)
-        if(i>100):
+        if(i>1000):
             print "Delta:",(time.time()-wall)
             i=0

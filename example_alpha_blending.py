@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, pygame.time
 
 #init pygame
 pygame.init()
@@ -25,7 +25,9 @@ screen.blit(textured_mask,textured_rect)
 
 pygame.display.flip()
 
+clock = pygame.time.Clock()
 while 1:
+    clock.tick(60)
     event=pygame.event.wait()
     if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key in [pygame.K_ESCAPE, pygame.K_q]):
         sys.exit()
