@@ -28,12 +28,13 @@ class Tile(object):
 
 class Tile_Map(object):
 
-    def __init__(self, height_map, water_map, tileset_image, width, height, tile_size):
+    def __init__(self, height_map, water_map, tileset_image, masks_image, width, height, tile_size):
 
         self.m_width = width
         self.m_height = height
         self.m_tile_size = tile_size
         self.m_sprite_sheet = Sprite_Sheet(tileset_image)
+        self.m_masks = Sprite_Sheet(masks_image)
         self.m_height_map = map_generation.matrix_scale(height_map,0,100)
         self.m_water_map = numpy.array(water_map)
         
@@ -46,41 +47,58 @@ class Tile_Map(object):
         print len(self.m_map),',',len(self.m_map[0])
         self.march()
 
+    def march_assist(self,x,y,type):
+
+        index=0
+
+        if(self.m_typemap[x  ][y  ]==type):
+            index+=8
+        if(self.m_typemap[x+1][y  ]==type):
+            index+=4
+        if(self.m_typemap[x+1][y+1]==type):
+            index+=2
+        if(self.m_typemap[x  ][y+1]==type):
+            index+=1
+
+        return index
+
+
     def march(self):
 
-        typemap = numpy.zeros((self.m_width,self.m_height))
+        self.m_typemap = numpy.zeros((self.m_width,self.m_height))
 
+        print "Typing..."
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
 
                 if(self.m_water_map[x][y] > 1.0):
 
                     if(self.m_height_map[y][x]>88):
-                        typemap[x][y]=3 # light rock
+                        self.m_typemap[x][y]=3 # light rock
 
                     elif(self.m_height_map[y][x]>75):
-                        typemap[x][y]=2 # dark rock
+                        self.m_typemap[x][y]=2 # dark rock
 
                     elif(self.m_height_map[y][x]>65):
-                        typemap[x][y]=5 # jungle
+                        self.m_typemap[x][y]=5 # jungle
 
                     elif(self.m_height_map[y][x]>32):
-                        typemap[x][y]=4 # grass
+                        self.m_typemap[x][y]=4 # grass
 
                     elif(self.m_height_map[y][x]>22):
-                        typemap[x][y]=6 # dirt
+                        self.m_typemap[x][y]=6 # dirt
 
                     elif(self.m_height_map[y][x]>15):
-                        typemap[x][y]=1 # gravel
+                        self.m_typemap[x][y]=1 # gravel
 
                     else:
-                        typemap[x][y]=7 # beach
+                        self.m_typemap[x][y]=7 # beach
 
                 elif(self.m_water_map[x][y] > 0.95):
-                    typemap[x][y]=8 # shallow water
+                    self.m_typemap[x][y]=8 # shallow water
 
                 else:
-                    typemap[x][y]=9 # deep water
+                    self.m_typemap[x][y]=9 # deep water
 
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
@@ -88,12 +106,13 @@ class Tile_Map(object):
                 surf.fill((255,0,255))
                 self.m_map[x][y].append(Tile(-1,surf))
 
+        print "Blitting..."
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
 
-                tid = typemap[x][y]
+                tid = self.m_typemap[x][y]
 
-                if( typemap[x][y] != -1):
+                if( self.m_typemap[x][y] != -1):
 
                     surf = self.m_sprite_sheet.image_by_index(750,tid)
                     posn = [(x*self.m_tile_size)%750,(y*self.m_tile_size)%750,self.m_tile_size,self.m_tile_size]
@@ -102,13 +121,13 @@ class Tile_Map(object):
 
                     #covers the edge cases where it needs to tile
                     if(posn[0] + posn[2] >= 750):
-                        self.m_map[x][y][0].get().blit(surf,(750, 0),area=posn)
+                        self.m_map[x][y][0].get().blit(surf,(750-posn[0], 0),area=posn)
 
                         if(posn[1] + posn[3] >= 750):
-                            self.m_map[x][y][0].get().blit(surf,(750,750),area=posn)
+                            self.m_map[x][y][0].get().blit(surf,(750-posn[0],750-posn[1]),area=posn)
 
                     if(posn[1] + posn[3] >= 750):
-                        self.m_map[x][y][0].get().blit(surf,(0,750),area=posn)
+                        self.m_map[x][y][0].get().blit(surf,(0,750-posn[1]),area=posn)
 
     def __old_march(self):
 
@@ -157,9 +176,9 @@ if __name__ == '__main__':
     #h = map_generation.perlin_main(32, 0, 1, 3)
 
     #t = Tile_Map(h, w, "Assets/Textures.png", 16, 16, 64)
-    #t = Tile_Map(h, w, "Assets/Textures.png", 64, 64, 16)
+    t = Tile_Map(h, w, "Assets/Textures.png", 64, 64, 16)
     #t = Tile_Map(h, w, "Assets/Textures.png", 128, 128, 8)
-    t = Tile_Map(h, w, "Assets/Textures.png", 256, 256, 4)
+    #t = Tile_Map(h, w, "Assets/Textures.png", 256, 256, 4)
     rm = t.draw()
 
     
