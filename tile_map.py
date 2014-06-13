@@ -175,10 +175,10 @@ if __name__ == '__main__':
     h = map_generation.perlin_main(128, 40, 14, 10)
     #h = map_generation.perlin_main(32, 0, 1, 3)
 
-    #t = Tile_Map(h, w, "Assets/Textures.png", 16, 16, 64)
-    t = Tile_Map(h, w, "Assets/Textures.png", 64, 64, 16)
-    #t = Tile_Map(h, w, "Assets/Textures.png", 128, 128, 8)
-    #t = Tile_Map(h, w, "Assets/Textures.png", 256, 256, 4)
+    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 16, 16, 64)
+    t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 64, 64, 16)
+    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 128, 128, 8)
+    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 256, 256, 4)
     rm = t.draw()
 
     
