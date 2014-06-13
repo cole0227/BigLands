@@ -128,34 +128,39 @@ class Actor_Unit(Unit):
             self.m_attack_damage.add(bonus.get("attack_damage"))
             self.m_attack_speed.add(bonus.get("attack_speed"))
 
-    def calc_damage(self, source_unit, mult=1.0):
+    def attack(self, target_unit, mult=1.0):
 
-        base_damage = source_unit.get("attack_damage")
+        base_damage = self.get("attack_damage")
         damage = random.uniform(base_damage*19.0,base_damage*21.0)/20
         damage *= mult
-        damage = int(max( damage - self.get("armour"), 0))
-        self.m_current_health = max(self.m_current_health-damage,0)
+        damage = int(max( damage - target_unit.get("armour"), 1))
+        target_unit.m_current_health = max(target_unit.m_current_health-damage,0)
         return damage
 
 
-player = Actor_Unit()
-player2 = Actor_Unit(armour = 11)
-print player2
-
-generic_nme  = Actor_Unit( 80, 8,100, 40,100)
-knight       = Actor_Unit(115,14, 70, 40, 80)
-warden       = Actor_Unit(100,10, 90, 40,100)
-zealot       = Actor_Unit( 90, 8, 90, 44,110)
-savage       = Actor_Unit(100, 4, 90, 49,120)
-friar        = Actor_Unit(150, 6, 70, 28,120)
-warlock      = Actor_Unit(100, 6, 80, 61, 80)
-ranger       = Actor_Unit(80 , 8,110, 40,110)
-source_unit  = Actor_Unit(100, 6,115, 47, 80)
+source_unit_nme  = Actor_Unit( 80, 8,100, 40,100)
+source_unit_knight       = Actor_Unit(115,20, 70, 40, 80)
+source_unit_warden       = Actor_Unit(100,12, 90, 40,100)
+source_unit_zealot       = Actor_Unit( 90, 8, 90, 44,110)
+source_unit_savage       = Actor_Unit(100, 0, 90, 49,120)
+source_unit_friar        = Actor_Unit(150, 4, 70, 28,120)
+source_unit_warlock      = Actor_Unit(100, 4, 80, 61, 80)
+source_unit_ranger       = Actor_Unit(80 , 8,110, 40,110)
+source_unit_scout        = Actor_Unit(100, 4,115, 47, 80)
+print source_unit_nme
+print source_unit_knight     
+print source_unit_warden     
+print source_unit_zealot     
+print source_unit_savage     
+print source_unit_friar      
+print source_unit_warlock    
+print source_unit_ranger     
+print source_unit_scout
 
 for i in range(0,5):
 
-    player1 = knight
-    player2 = zealot
+    player1 = source_unit_scout
+    player2 = source_unit_warden
     
-    print "1->2:",player2.calc_damage(player1), "\t\tHP:", player2.m_current_health,"\t\t",
-    print "2->1:",player1.calc_damage(player2), "\t\tHP:", player1.m_current_health
+    print "1->2:",player1.attack(player2), "\t\tHP:", player2.m_current_health,"\t\t",
+    print "2->1:",player2.attack(player1), "\t\tHP:", player1.m_current_health
