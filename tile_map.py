@@ -48,11 +48,17 @@ class Tile_Map(object):
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
                 if(self.m_water_map[y][x] > 1):
-                    tid = 21+15*int(self.m_height_map[y][x]/12)
-                    self.m_map[x][y].append(Tile(tid,pygame.transform.scale(self.m_sprite_sheet.image_by_index(128,tid)
+                    tid = 7-int((self.m_height_map[y][x]-5)/14.3)
+
+                    self.m_map[x][y].append(Tile(tid,pygame.transform.scale(self.m_sprite_sheet.image_by_index(750,tid)
+                            ,(self.m_tile_size,self.m_tile_size))))
+
+                elif(self.m_water_map[y][x] > 0.9):
+
+                    self.m_map[x][y].append(Tile(8,pygame.transform.scale(self.m_sprite_sheet.image_by_index(750,8)
                             ,(self.m_tile_size,self.m_tile_size))))
                 else:
-                    self.m_map[x][y].append(Tile(6,pygame.transform.scale(self.m_sprite_sheet.image_by_index(128,6)
+                    self.m_map[x][y].append(Tile(9,pygame.transform.scale(self.m_sprite_sheet.image_by_index(750,9)
                             ,(self.m_tile_size,self.m_tile_size))))
 
     def draw(self):
@@ -76,10 +82,15 @@ if __name__ == '__main__':
     globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
     pygame.display.set_caption("Tile Test")
 
-    w = map_generation.CA_CaveFactory(150, 150, 0.55).gen_map()
-    h = map_generation.perlin_main(128, 40, 14, 10)
+    w = map_generation.CA_CaveFactory(128, 32, 0.55).gen_map()
+    h = map_generation.perlin_main(256, 80, 10, 7)
+    #h = map_generation.perlin_main(128, 40, 14, 10)
     #h = map_generation.perlin_main(20, 0, 1, 3)
-    t = Tile_Map(h, w, "Assets/Huge Tileset.png", 256, 256, 4)
+
+    #t = Tile_Map(h, w, "Assets/Textures.png", 64, 64, 16)
+    #t = Tile_Map(h, w, "Assets/Textures.png", 256, 256, 4)
+    t = Tile_Map(h, w, "Assets/Textures.png", 512, 512, 2)
+
     
     i = 0
     while(True):
