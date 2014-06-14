@@ -125,8 +125,6 @@ class Tile_Map(object):
 
                     if(ma != 0):
 
-                        print x,y,tid
-
                         mask_surface = masks[ma].copy()
 
                         if( self.m_typemap[x][y] != -1):
@@ -137,33 +135,22 @@ class Tile_Map(object):
 
                             #covers the edge cases where it needs to tile
                             if(posn[0] + posn[2] >= 750):
-                                mask_surface.blit(surf[tid],(posn[2], 0),area = posn, special_flags = pygame.BLEND_ADD)
+                                posn2=posn[:]
+                                posn2[0]=0
+                                mask_surface.blit(surf[tid],(750-posn[0], 0),area = posn2, special_flags = pygame.BLEND_ADD)
 
                                 if(posn[1] + posn[3] >= 750):
-                                    mask_surface.blit(surf[tid],(posn[2],posn[3]),area = posn, special_flags = pygame.BLEND_ADD)
+                                    posn2[1]=0
+                                    mask_surface.blit(surf[tid],(750-posn[0],750-posn[1]),area = posn2, special_flags = pygame.BLEND_ADD)
 
                             if(posn[1] + posn[3] >= 750):
-                                mask_surface.blit(surf[tid],(0,posn[3]),area = posn, special_flags = pygame.BLEND_ADD)
+                                posn2=posn[:]
+                                posn2[1]=0
+                                mask_surface.blit(surf[tid],(0,750-posn[1]),area = posn2, special_flags = pygame.BLEND_ADD)
 
-                            self.m_map[x][y][0].get().blit(mask_surface,masks[ma].get_rect())
-
-    def __old_march(self):
-
-        for x in range(0,self.m_width):
-            for y in range(0,self.m_height):
-                if(self.m_water_map[y][x] > 1):
-                    tid = 7-int((self.m_height_map[y][x]-5)/14.3)
-
-                    self.m_map[x][y].append(Tile(tid,pygame.transform.scale(self.m_sprite_sheet.image_by_index(750,tid)
-                            ,(self.m_tile_size,self.m_tile_size))))
-
-                elif(self.m_water_map[y][x] > 0.9):
-
-                    self.m_map[x][y].append(Tile(8,pygame.transform.scale(self.m_sprite_sheet.image_by_index(750,8)
-                            ,(self.m_tile_size,self.m_tile_size))))
-                else:
-                    self.m_map[x][y].append(Tile(9,pygame.transform.scale(self.m_sprite_sheet.image_by_index(750,9)
-                            ,(self.m_tile_size,self.m_tile_size))))
+                            rec = masks[ma].get_rect()
+                            rec.move(x*self.m_tile_size,y*self.m_tile_size)
+                            self.m_map[x][y][0].get().blit(mask_surface,rec)
 
     def draw(self):
 
@@ -177,6 +164,7 @@ class Tile_Map(object):
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
                 for tile in self.m_map[x][y]:
+                    pass
                     surf.blit(tile.get(), (x*self.m_tile_size,y*self.m_tile_size))
 
         return surf
@@ -194,10 +182,11 @@ if __name__ == '__main__':
     pygame.display.set_caption("Tile Test")
 
     w = map_generation.CA_CaveFactory(32, 32, 0.55).gen_map()
-    #h = map_generation.perlin_main(256, 80, 10, 7)
+    #h = map_generation.perlin_main(256, 140, 10, 7)
     #h = map_generation.perlin_main(128, 40, 14, 10)
     h = map_generation.perlin_main(32, 0, 1, 3)
 
+    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 8, 8, 128)
     #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 16, 16, 64)
     t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 64, 64, 16)
     #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 128, 128, 8)
