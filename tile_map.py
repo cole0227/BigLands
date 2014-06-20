@@ -106,32 +106,37 @@ class Tile_Map(object):
                 surf.fill((255,0,255))
                 self.m_map[x][y].append(Tile(-1,surf))
 
-        print "Caching"
+        print "Caching",
         surf = []
         for i in range(0,10):
             surf.append(self.m_sprite_sheet.image_by_index(750,i).convert_alpha())
+            print ".",
 
         masks = []
         for i in range(0,16):
             masks.append(pygame.transform.scale(self.m_masks.image_by_index(250,i).convert_alpha(),(self.m_tile_size,self.m_tile_size)))
             globals.window_surface.blit(masks[i],(i*32,0))
+            print ".",
+        print "."
 
         print "Blitting..."
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
                 for tid in range(9, -1, -1):
 
+                    #this tells us which index of the mask we need
                     ma = self.march_assist(x,y,tid)
 
                     if(ma != 0):
 
-                        mask_surface = masks[ma].copy()
+                        #setting up the temporary surface for blitting
+                        mask_surface = pygame.Surface((self.m_tile_size,self.m_tile_size)).convert_alpha()
+                        posn = [(x*self.m_tile_size)%750,(y*self.m_tile_size)%750,self.m_tile_size,self.m_tile_size]
+                        mask_surface.blit(masks[ma],(0,0), None, pygame.BLEND_ADD)
 
                         if( self.m_typemap[x][y] != -1):
 
-                            posn = [(x*self.m_tile_size)%750,(y*self.m_tile_size)%750,self.m_tile_size,self.m_tile_size]
-
-                            mask_surface.blit(surf[tid],(0, 0),area = posn, special_flags = pygame.BLEND_ADD)
+                            mask_surface.blit(surf[tid],(0, 0),area = posn2, special_flags = pygame.BLEND_ADD)
 
                             #covers the edge cases where it needs to tile
                             if(posn[0] + posn[2] >= 750):
@@ -149,7 +154,7 @@ class Tile_Map(object):
                                 mask_surface.blit(surf[tid],(0,750-posn[1]),area = posn2, special_flags = pygame.BLEND_ADD)
 
                             rec = masks[ma].get_rect()
-                            rec.move(x*self.m_tile_size,y*self.m_tile_size)
+                            #rec.move(x*self.m_tile_size,y*self.m_tile_size)
                             self.m_map[x][y][0].get().blit(mask_surface,rec)
 
     def draw(self):
@@ -179,7 +184,9 @@ if __name__ == '__main__':
     pygame.font.init()
     random.seed()
     globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
+    globals.window_surface.fill((0,0,100))
     pygame.display.set_caption("Tile Test")
+    pygame.display.update()
 
     w = map_generation.CA_CaveFactory(32, 32, 0.55).gen_map()
     #h = map_generation.perlin_main(256, 140, 10, 7)
@@ -191,9 +198,9 @@ if __name__ == '__main__':
     t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 64, 64, 16)
     #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 128, 128, 8)
     #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 256, 256, 4)
+    
     rm = t.draw()
 
-    
     i = 0
     clock = pygame.time.Clock()
     while(True):
