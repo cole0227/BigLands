@@ -26,6 +26,8 @@ class Game_Object(object):
         self.m_icon.convert_alpha()
         self.m_icon.set_colorkey((0,0,0))
 
+        print self.m_pos
+
         self.m_delete = False
 
         self.m_id = globals.id_game_object
