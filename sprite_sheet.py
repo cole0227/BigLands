@@ -10,9 +10,14 @@ import random
 # (x, y, x + offset, y + offset)
  
 class Sprite_Sheet(object):
-    def __init__(self, filename):
+    def __init__(self, filename,conversion=None):
         try:
-            self.sheet = pygame.image.load(filename).convert()
+            if(conversion == None):
+                self.sheet = pygame.image.load(filename).convert()
+                
+            elif(conversion == "Alpha"):
+                self.sheet = pygame.image.load(filename).convert_alpha()
+
         except pygame.error, message:
             print 'Unable to load spritesheet image:', filename
             raise SystemExit, message

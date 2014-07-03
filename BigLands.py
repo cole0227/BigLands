@@ -40,6 +40,13 @@ def main_init():
     globals.sprite_icon = pygame.image.load(random_icon())
     globals.sprite_icon.convert_alpha()
     globals.sprite_icon.set_colorkey((0,0,0))
+
+    globals.icons_iu = Sprite_Sheet("Assets/Game-Icons-Mods/icon_underlays.png","Alpha")
+    globals.icons_ut = Sprite_Sheet("Assets/Game-Icons-Mods/underlays.png","Alpha")
+    globals.icons_ov = Sprite_Sheet("Assets/Game-Icons-Mods/overlays2.png","Alpha")
+    globals.icons_overtest = pygame.image.load("Assets/Game-Icons-Mods/overlays2.png")
+    globals.icons_overtest.convert_alpha()
+
     print "Loaded Sprites"
 
     # Make the Screens
