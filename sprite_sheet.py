@@ -42,6 +42,12 @@ class Sprite_Sheet(object):
                               size,
                               size), colorkey)
         
+
+    #Load an image given a valid index
+    def image_by_coords(self, size, x, y, colorkey = None):
+
+        self.image_by_index(self, size, x+y*self.sheet.get_width() / size, colorkey)
+
     # Load a whole bunch of images and return them as a list
     def images_at(self, rects, colorkey = None):
         "Loads multiple images, supply a list of coordinates" 

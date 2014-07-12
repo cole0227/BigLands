@@ -12,6 +12,9 @@ def clamp(l,m,g):
     
     return max(l,min(g,m))
 
+def distance(pos1,pos2):
+
+    return ( (pos1[0]-pos2[0]) ** 2 + (pos1[1]-pos2[1]) ** 2 ) ** 0.5
 
 def random_icon(num=None):
     if(num == None):

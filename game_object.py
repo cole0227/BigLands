@@ -35,7 +35,7 @@ class Game_Object(object):
 
     def get_rect(self):
 
-        return(self.x,self.y,self.m_width,self.m_width)
+        return( (self.m_pos[0]-self.m_width/2,self.m_pos[1]-self.m_width/2,self.m_width/2,self.m_width/2) )
 
     def to_dict(self):
         

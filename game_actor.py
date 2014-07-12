@@ -27,12 +27,18 @@ class Game_Actor(Game_Object):
 
         Game_Object.input(self,event)
 
+        if (event.type == KEYDOWN):
+            if(event.key == K_F5):
+                print self.m_unit.m_current_health
+
+
     def update(self, delta):
 
         Game_Object.update(self, delta)
 
-        if(self.m_unit.m_current_health > 0):
+        if(self.m_unit.m_current_health <= 0):
             self.m_delete = True
+            print "Time to Die"
 
     def collide(self, other):
 
@@ -40,14 +46,13 @@ class Game_Actor(Game_Object):
 
         if( collision and not(other == self) and hasattr(other, "m_unit")):
 
-            self.attack(other,1.0)
+            pass
 
     def attack(self, target, mult):
-        print "Can Attack:", self.m_attack_timer.test()
-        if(self.m_attack_timer.test()):
+        print "Can Attack:", str(self.m_attack_timer)
+        if(self.m_attack_timer.attempt_action()):
 
             print "Damage: ",self.m_unit.attack(target.m_unit,mult)
-            self.m_attack_timer.set()
 
 
     def __str__(self):
@@ -69,6 +74,17 @@ class Player_Actor(Game_Actor):
 
         if pygame.mouse.get_pressed()[0]:
             self.m_target = pygame.mouse.get_pos()
+
+        elif pygame.mouse.get_pressed()[2]:
+            print "Right Click"
+            if(distance(self.m_pos,self.m_target) < self.m_unit.get("attack_range")):
+                other = globals.screens["Game"].object_at(self.m_target)
+
+                if(other != None and hasattr(other, "m_unit")):
+
+                    self.attack(other,1.0)
+
+            self.m_target = pygame.mouse.get_pos()            
 
     def update(self,delta):
 
