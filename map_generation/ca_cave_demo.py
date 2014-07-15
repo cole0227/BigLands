@@ -1,6 +1,7 @@
 import profile
 import sys
 from random import randrange
+from random import triangular
 from DisjointSet import DisjointSet
 
 PERM_WALL = 0
@@ -169,7 +170,32 @@ class CA_CaveFactory:
                         self.__ds.union(root1,root2)
 
 
+class WeightedCaveFactory(CA_CaveFactory):
+
+    def __init__(self,length,width,initial_open=0.40):
+
+        CA_CaveFactory.__init__(self,length,width,initial_open)
+
+    def __gen_initial_map(self,initial_open):
+        for r in range(0,self.__length):
+            row = []
+            for c in range(0,self.__width):
+                row.append(WALL)
+            self.__map.append(row)
+
+        open_count = int(self.__area * initial_open)
+        self.__set_border()
+
+        while open_count > 0:
+            rand_r = int((triangular(1,self.__length-1,self.__length/2.0)*3+randrange(1,self.__length-1))/4.0)
+            rand_c = int((triangular(1,self.__width-1,self.__length/2.0)*3+randrange(1,self.__width-1))/4.0)
+
+            if self.__map[rand_r][rand_c] == WALL:
+                self.__map[rand_r][rand_c] = FLOOR
+                open_count -= 1
+
+
 if __name__ == "__main__":
-    caf = CA_CaveFactory(40,70,0.41)
+    caf = WeightedCaveFactory(40,70,0.41)
     profile.run("caf.gen_map()")
     caf.print_grid()

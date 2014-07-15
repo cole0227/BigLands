@@ -51,6 +51,9 @@ sprite_cube = None
 global sprite_icon
 sprite_icon = None
 
+global loading_message
+loading_message = ""
+
 global icon_list
 icon_list = []
 prev = os.getcwd()

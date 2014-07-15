@@ -48,8 +48,14 @@ class Tile_Map(object):
         
         print self.m_height_map.shape,"/",self.m_water_map.shape
         self.m_height_map = scipy.ndimage.zoom(self.m_height_map, (max(width+1.0,height+1.0)**2/self.m_height_map.size)**0.5, order=4)
+
         self.m_water_map = scipy.ndimage.zoom(self.m_water_map, (max(width+1.0,height+1.0)**2/self.m_water_map.size)**0.5, order=4)
+        self.m_water_map = gaussian_blur.gaussian_blur(self.m_water_map,1)
         print self.m_height_map.shape,"/",self.m_water_map.shape
+
+        self.m_map = defaultdict(lambda  : defaultdict(list))
+        print len(self.m_map),',',len(self.m_map[0])
+        self.march()
 
         #woods time
         maxX = 0
@@ -67,6 +73,7 @@ class Tile_Map(object):
         for xy, tile in wood_map.iteritems():
 
             if(tile == "#"):
+
                 self.m_wood_map[xy[0]][xy[1]] = 1
 
             else:
@@ -91,9 +98,12 @@ class Tile_Map(object):
         
         self.m_wood_map -= newmap
 
-        self.m_map = defaultdict(lambda  : defaultdict(list))
-        print len(self.m_map),',',len(self.m_map[0])
-        self.march()
+        #trees do not grow on gravel, or in the water
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                if(self.m_typemap[x][y] == 8 or self.m_typemap[x][y] == 9 or self.m_typemap[x][y] == 1):
+                    self.m_wood_map[x][y] = 0
+
         self.trees()
 
         #let's set up the collision map:
@@ -129,7 +139,7 @@ class Tile_Map(object):
         for x in range(0,self.m_width+1):
             for y in range(0,self.m_height+1):
 
-                if(self.m_water_map[x][y] > 1.0):
+                if(self.m_water_map[x][y] > 1.07 or self.m_height_map[y][x] > 60):
 
                     if(self.m_height_map[y][x]>88):
                         self.m_typemap[x][y]=3 # light rock
@@ -155,12 +165,71 @@ class Tile_Map(object):
                     else:
                         self.m_typemap[x][y]=8 # shallow water
 
-                elif(self.m_water_map[x][y] > 0.95):
+                elif(self.m_water_map[x][y] > 0.8):
                     self.m_typemap[x][y]=8 # shallow water
 
                 else:
                     self.m_typemap[x][y]=9 # deep water
 
+        #bordering the coastlines
+        for x in range(1,self.m_width):
+            for y in range(1,self.m_height):
+
+                #deep water
+                if(self.m_typemap[x][y] == 9):
+                    self.m_typemap[x][y] = 8
+
+                #shallow water
+                if(self.m_typemap[x][y] == 8):
+
+                    #are we by the sea-shore?
+                    near_water = 0
+                    for x1 in range(-1,2):
+                        for y1 in range(-1,2):
+                            if(self.m_typemap[x+x1][y+y1] == 9 or self.m_typemap[x+x1][y+y1] == 8):
+                                near_water += 1
+
+                    if(near_water>=9):
+                        #make it deep water
+                        self.m_typemap[x][y] = 9
+                
+                #grabbing coast that isn't gravel or beach
+                elif(self.m_typemap[x][y] != 7 and self.m_typemap[x][y] != 1):
+
+                    #are we by the sea-shore?
+                    near_water = 0
+                    for x1 in range(-1,2):
+                        for y1 in range(-1,2):
+                            if(self.m_typemap[x+x1][y+y1] == 9 or self.m_typemap[x+x1][y+y1] == 8):
+                                near_water +=1
+
+                    #make it gravel
+                    if(near_water >= 2):
+                        self.m_typemap[x][y]=1
+
+        #add the extra layers of shallow water
+        for i in range(0,2):
+            tempmap = numpy.zeros((self.m_width+1,self.m_height+1))
+            for x in range(1,self.m_width):
+                for y in range(1,self.m_height):
+
+                    #deep water
+                    if(self.m_typemap[x][y] == 9):
+
+                        #are we by the shallows
+                        near_shallows = 0
+                        for x1 in range(-1,2):
+                            for y1 in range(-1,2):
+                                if(self.m_typemap[x+x1][y+y1] == 8):
+                                    near_shallows += 1
+                                    break
+
+                        if(near_shallows>0):
+                            #make it more shallow, by applying it later
+                            tempmap[x][y] = -1
+            #apply the temp map
+            self.m_typemap += tempmap
+                
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
                 surf = pygame.Surface((self.m_tile_size,self.m_tile_size))
@@ -305,7 +374,7 @@ class Tile_Map(object):
 
     def draw(self):
 
-        surf = pygame.Surface((globals.screen_size,globals.screen_size))
+        surf = pygame.Surface((self.m_tile_size*self.m_width,self.m_tile_size*self.m_height))
         
         surf.blit(self.m_sprite_sheet.image_by_index(750,0),(  0,  0))
         surf.blit(self.m_sprite_sheet.image_by_index(750,0),(750,  0))
@@ -319,10 +388,77 @@ class Tile_Map(object):
 
         return surf
 
+class Game_Map(object):
 
+    def __init__(self,size=4096,tiles=256,textures="Assets/Textures.png",masks="Assets/Texture Masks.png"):
 
+        self.m_size = size
+        self.m_tiles = tiles
+        self.m_textures = textures
+        self.m_masks = masks
+
+        #mute the output of this, and start counting
+        save_stdout = sys.stdout
+        sys.stdout = cStringIO.StringIO()
+
+        wall = time.time()
+
+        #begin mapping
+        water = map_generation.WeightedCaveFactory(40*tiles/256, 40*tiles/256, 0.45).gen_map()
+
+        height = map_generation.perlin_main(tiles, 180*tiles/256, 14, 10)
+
+        woods = map_generation.dungeon_make(int(36*tiles/256.0),int(36*tiles/256.0),9,roundedness=10)
+
+        tile_map = Tile_Map(height, water, woods, textures, masks, tiles, tiles, size/tiles)
+        
+        self.m_surface = tile_map.draw()
+        self.m_collision = tile_map.m_collision_map
+
+        #unmute the output
+        sys.stdout = save_stdout
+
+        print "Net Time:",time.time()-wall
+
+    def get_surface(self):
+
+        return self.m_surface
+
+    def get_collision(self):
+
+        return self.m_collision
 
 if __name__ == '__main__':
+
+    pygame.init()
+    pygame.font.init()
+    random.seed()
+    globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
+    globals.window_surface.fill((0,0,100))
+    globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
+    globals.sprite_road = pygame.image.load('Assets/Road.png').convert_alpha()
+    pygame.display.set_caption("Tile Test")
+    pygame.display.update()
+
+    mp = Game_Map(8192,256).get_surface()
+    globals.window_surface.blit(mp,(0,0))
+    pygame.image.save(mp,"screen.png")
+
+    pygame.display.update()
+    clock = pygame.time.Clock()
+    while(True):
+        clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit() 
+                sys.exit()
+            elif event.type == KEYDOWN:
+
+                if(event.key == K_ESCAPE):
+                    pygame.quit() 
+                    sys.exit()
+
+if __name__ == '__main__' and 0==1:
 
     #mute the output of this shit
     save_stdout = sys.stdout
@@ -334,7 +470,7 @@ if __name__ == '__main__':
     pygame.init()
     pygame.font.init()
     random.seed()
-    globals.screen_size=1024*4
+    globals.screen_size=1024*5
     globals.window_surface = pygame.display.set_mode((min(globals.screen_size,1024),min(globals.screen_size,1024)), 0, 32)
     globals.window_surface.fill((0,0,100))
     globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
@@ -342,7 +478,8 @@ if __name__ == '__main__':
     pygame.display.set_caption("Tile Test")
     pygame.display.update()
 
-    water = map_generation.CA_CaveFactory(32, 32, 0.55).gen_map()
+    #water = map_generation.WeightedCaveFactory(20, 20, 0.45).gen_map()
+    water = map_generation.WeightedCaveFactory(40, 40, 0.45).gen_map()
 
     #height = map_generation.perlin_main(128, 45, 14, 10)
     height = map_generation.perlin_main(256, 180, 14, 10)

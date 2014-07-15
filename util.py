@@ -4,6 +4,7 @@ import copy
 import pygame
 import pygame.time
 import pygame.image
+import numpy
 
 import globals
 from sprite_sheet import *
@@ -47,7 +48,7 @@ def stats_percentile( amatrix ):
         
         return sort[ min( max( int( ( amatrix.size - 1 ) * percent / 100), 0 ), amatrix.size - 1 ) ]
 
-    final = zeros(( 11 )) 
+    final = numpy.zeros(( 11 )) 
     for x in range( 0, 11 ):
 
         final[x] = mymatrix[ find_percentile( x * 10 ) ]
