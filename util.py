@@ -8,6 +8,55 @@ import pygame.image
 import globals
 from sprite_sheet import *
 
+execfile("font_fx.py")
+
+#
+# Finds the Largest and smallest element
+#
+def stats_range(amatrix):
+
+    mymatrix = amatrix.reshape( -1 )
+    sort = mymatrix.argsort()
+    final = [mymatrix[sort[0]], mymatrix[sort[ amatrix.size - 1 ]]]
+    return final
+
+#
+# Forces the numbers in a matrix to within set bounds
+#
+def matrix_scale(amatrix,minimum,maximum):
+        
+    size = int( amatrix.size ** ( 0.5 ) )
+    rs = stats_range( amatrix )
+    factor = ( maximum - minimum ) / ( rs[1] - rs[0] )
+    amatrix = ( amatrix - rs[0] ) * factor + minimum
+    return amatrix
+
+#
+# Gives the value for the 9 intermediary 10th-percentile
+# elevations, and the highest and lowest points
+#
+def stats_percentile( amatrix ):
+    
+    mymatrix = amatrix.reshape( -1 )
+    sort = mymatrix.argsort()
+
+    #
+    # Returns the element for the matching percent
+    #
+    def find_percentile( percent ):
+        
+        return sort[ min( max( int( ( amatrix.size - 1 ) * percent / 100), 0 ), amatrix.size - 1 ) ]
+
+    final = zeros(( 11 )) 
+    for x in range( 0, 11 ):
+
+        final[x] = mymatrix[ find_percentile( x * 10 ) ]
+
+    return final
+
+#
+# Basic value clamping
+#
 def clamp(l,m,g):
     
     return max(l,min(g,m))

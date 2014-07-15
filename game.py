@@ -62,13 +62,13 @@ class Game(Screen):
 
         Screen.draw(self)
 
-    def object_at(self,posn):
+    def object_at(self,posn, source):
 
         for obj in self.m_game_objects:
             
             rect = obj.get_rect()
 
-            if(posn[0] > rect[0] and posn[0] < rect[0]+rect[2] and posn[1] > rect[1] and posn[1] < rect[1]+rect[3]):
+            if(obj != source, posn[0] > rect[0] and posn[0] < rect[0]+rect[2] and posn[1] > rect[1] and posn[1] < rect[1]+rect[3]):
 
                 return obj
 

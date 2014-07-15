@@ -1,3 +1,5 @@
+import sys
+import cStringIO
 import time
 import sys
 import random
@@ -5,12 +7,15 @@ from collections import defaultdict
 
 import numpy
 import scipy
+from scipy.misc import imsave
 import scipy.ndimage
 import pygame
 from pygame.locals import *
 import pygame.time
 import pygame.font
 
+import gaussian_blur
+from util import *
 from sprite_sheet import *
 import globals
 import map_generation
@@ -28,24 +33,78 @@ class Tile(object):
 
 class Tile_Map(object):
 
-    def __init__(self, height_map, water_map, tileset_image, masks_image, width, height, tile_size):
+    def __init__(self, height_map, water_map, wood_map, tileset_image, masks_image, width, height, tile_size, tree_threshhold=0.75, road_threshhold=0.08):
 
         self.m_width = width
         self.m_height = height
         self.m_tile_size = tile_size
+        self.m_tree_threshhold = tree_threshhold
+        self.m_road_threshhold = road_threshhold
         self.m_sprite_sheet = Sprite_Sheet(tileset_image)
         self.m_masks = Sprite_Sheet(masks_image)
         self.m_height_map = map_generation.matrix_scale(height_map,0,100)
         self.m_water_map = numpy.array(water_map)
+        self.m_collision_map = numpy.zeros((width,height))+1
         
         print self.m_height_map.shape,"/",self.m_water_map.shape
         self.m_height_map = scipy.ndimage.zoom(self.m_height_map, (max(width+1.0,height+1.0)**2/self.m_height_map.size)**0.5, order=4)
         self.m_water_map = scipy.ndimage.zoom(self.m_water_map, (max(width+1.0,height+1.0)**2/self.m_water_map.size)**0.5, order=4)
         print self.m_height_map.shape,"/",self.m_water_map.shape
 
+        #woods time
+        maxX = 0
+        maxY = 0
+
+        for xy, tile in wood_map.iteritems():
+
+            #we need these for calulating size
+            maxX = max(maxX,xy[0])
+            maxY = max(maxY,xy[1])
+            
+
+        self.m_wood_map = numpy.zeros((maxX+1,maxY+1))
+
+        for xy, tile in wood_map.iteritems():
+
+            if(tile == "#"):
+                self.m_wood_map[xy[0]][xy[1]] = 1
+
+            else:
+
+                self.m_wood_map[xy[0]][xy[1]] = 0
+
+        self.m_wood_map = scipy.ndimage.zoom(self.m_wood_map, (max(width+1.0,height+1.0)**2/self.m_wood_map.size)**0.5, order=4)
+        self.m_wood_map_blurry = matrix_scale(gaussian_blur.gaussian_blur( self.m_wood_map, 1 ),0,1)
+        
+        #let's erode a bit
+        newmap = numpy.zeros((self.m_width+1,self.m_height+1))
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                if(self.m_wood_map[x][y] > self.m_tree_threshhold):
+
+                            for x1, y1 in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+
+                                if(self.m_wood_map[x+x1][y+y1] < self.m_tree_threshhold):
+
+                                    newmap[x][y]=self.m_tree_threshhold/2
+                                    break
+        
+        self.m_wood_map -= newmap
+
         self.m_map = defaultdict(lambda  : defaultdict(list))
         print len(self.m_map),',',len(self.m_map[0])
         self.march()
+        self.trees()
+
+        #let's set up the collision map:
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                if(self.m_height_map[y][x]>5 and self.m_typemap[x][y] != 8 and self.m_typemap[x][y] != 9):
+                    if(self.m_height_map[y][x]<=88):
+                        self.m_collision_map[x][y] = 0
+                    else:
+                        self.m_collision_map[x][y] = 0.7
+
 
     def march_assist(self,x,y,type):
 
@@ -61,7 +120,6 @@ class Tile_Map(object):
             index+=1
 
         return index
-
 
     def march(self):
 
@@ -91,8 +149,11 @@ class Tile_Map(object):
                     elif(self.m_height_map[y][x]>15):
                         self.m_typemap[x][y]=1 # gravel
 
-                    else:
+                    elif(self.m_height_map[y][x]>5):
                         self.m_typemap[x][y]=7 # beach
+
+                    else:
+                        self.m_typemap[x][y]=8 # shallow water
 
                 elif(self.m_water_map[x][y] > 0.95):
                     self.m_typemap[x][y]=8 # shallow water
@@ -136,11 +197,11 @@ class Tile_Map(object):
 
                         if( self.m_typemap[x][y] != -1):
 
+                            posn2=posn[:]
                             mask_surface.blit(surf[tid],(0, 0),area = posn2, special_flags = pygame.BLEND_ADD)
 
                             #covers the edge cases where it needs to tile
                             if(posn[0] + posn[2] >= 750):
-                                posn2=posn[:]
                                 posn2[0]=0
                                 mask_surface.blit(surf[tid],(750-posn[0], 0),area = posn2, special_flags = pygame.BLEND_ADD)
 
@@ -157,9 +218,94 @@ class Tile_Map(object):
                             #rec.move(x*self.m_tile_size,y*self.m_tile_size)
                             self.m_map[x][y][0].get().blit(mask_surface,rec)
 
+    def trees(self):
+
+        huge_tree = pygame.transform.scale(globals.sprite_tree,(self.m_tile_size*3,self.m_tile_size*3))
+        big_tree = pygame.transform.scale(globals.sprite_tree,(self.m_tile_size*2,self.m_tile_size*2))
+        big_road = pygame.transform.scale(globals.sprite_road,(self.m_tile_size*2,self.m_tile_size*2))
+        tree = pygame.transform.scale(globals.sprite_tree,(self.m_tile_size,self.m_tile_size))
+        road = pygame.transform.scale(globals.sprite_road,(self.m_tile_size,self.m_tile_size))
+
+        tobe = numpy.zeros((self.m_width,self.m_height))
+
+        #populate the data in the matrices
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                if(self.m_typemap[x][y] != 8 
+                   and self.m_typemap[x][y] != 9
+                   and self.m_height_map[y][x]<88
+                   and self.m_height_map[y][x]>5):
+
+                    if(self.m_wood_map[x][y] > self.m_tree_threshhold and self.m_height_map[y][x]>20):
+
+                        tobe[x][y] = 1
+                        self.m_collision_map[x][y] = 1
+
+                    elif(self.m_wood_map_blurry[x][y] < self.m_road_threshhold):
+
+                        tobe[x][y] = 2
+                        self.m_collision_map[x][y] = -0.5
+        
+        #fill in the big ones
+        for x in range(1,self.m_width-1):
+            for y in range(1,self.m_height-1):
+
+                count_huge_tree = 0
+                count_tree = 0
+                count_road = 0
+                
+                for x1 in range(-1,2):
+
+                    for y1 in range(-1,2):
+
+                        if(tobe[x+x1][y+y1]==1):
+                            count_huge_tree +=1
+                        else:
+                            break
+
+                for x1 in range(-1,1):
+
+                    for y1 in range(-1,1):
+
+                        if(tobe[x+x1][y+y1]==1):
+                            count_tree +=1
+                        elif(tobe[x+x1][y+y1]==2):
+                            count_road +=1
+
+                if(count_huge_tree == 9):
+                    for x1 in range(-1,2):
+                        for y1 in range(-1,2):
+                            tobe[x+x1][y+y1]=0
+                            self.m_map[x+x1][y+y1][0].get().blit(huge_tree,(0,0),(self.m_tile_size*(1+x1),self.m_tile_size*(1+y1),self.m_tile_size,self.m_tile_size))
+
+                elif(count_tree == 4):
+                    for x1 in range(-1,1):
+                        for y1 in range(-1,1):
+                            tobe[x+x1][y+y1]=0
+                            self.m_map[x+x1][y+y1][0].get().blit(big_tree,(0,0),(self.m_tile_size*(1+x1),self.m_tile_size*(1+y1),self.m_tile_size,self.m_tile_size))
+
+                elif(count_road == 4):
+                    for x1 in range(-1,1):
+                        for y1 in range(-1,1):
+                            tobe[x+x1][y+y1]=0
+                            self.m_map[x+x1][y+y1][0].get().blit(big_road,(0,0),(self.m_tile_size*(1+x1),self.m_tile_size*(1+y1),self.m_tile_size,self.m_tile_size))
+
+        
+        #finish off with the little ones
+        for x in range(0,self.m_width):
+            for y in range(0,self.m_height):
+                for tile in self.m_map[x][y]:
+
+                    if(tobe[x][y]==1):
+                        tile.get().blit(tree,(0,0))
+
+                    elif(tobe[x][y]==2):
+                        tile.get().blit(road,(0,0))
+                    
+
     def draw(self):
 
-        surf = pygame.Surface((1024,1024))
+        surf = pygame.Surface((globals.screen_size,globals.screen_size))
         
         surf.blit(self.m_sprite_sheet.image_by_index(750,0),(  0,  0))
         surf.blit(self.m_sprite_sheet.image_by_index(750,0),(750,  0))
@@ -169,7 +315,6 @@ class Tile_Map(object):
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
                 for tile in self.m_map[x][y]:
-                    pass
                     surf.blit(tile.get(), (x*self.m_tile_size,y*self.m_tile_size))
 
         return surf
@@ -179,28 +324,42 @@ class Tile_Map(object):
 
 if __name__ == '__main__':
 
+    #mute the output of this shit
+    save_stdout = sys.stdout
+    sys.stdout = cStringIO.StringIO()
+
+    wall = time.time()
+
     #core initiation
     pygame.init()
     pygame.font.init()
     random.seed()
-    globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
+    globals.screen_size=1024*4
+    globals.window_surface = pygame.display.set_mode((min(globals.screen_size,1024),min(globals.screen_size,1024)), 0, 32)
     globals.window_surface.fill((0,0,100))
+    globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
+    globals.sprite_road = pygame.image.load('Assets/Road.png').convert_alpha()
     pygame.display.set_caption("Tile Test")
     pygame.display.update()
 
-    w = map_generation.CA_CaveFactory(32, 32, 0.55).gen_map()
-    #h = map_generation.perlin_main(256, 140, 10, 7)
-    #h = map_generation.perlin_main(128, 40, 14, 10)
-    h = map_generation.perlin_main(32, 0, 1, 3)
+    water = map_generation.CA_CaveFactory(32, 32, 0.55).gen_map()
 
-    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 8, 8, 128)
-    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 16, 16, 64)
-    t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 64, 64, 16)
-    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 128, 128, 8)
-    #t = Tile_Map(h, w, "Assets/Textures.png", "Assets/Texture Masks.png", 256, 256, 4)
+    #height = map_generation.perlin_main(128, 45, 14, 10)
+    height = map_generation.perlin_main(256, 180, 14, 10)
+
+    #woods = map_generation.dungeon_make(18,18,9,roundedness=10)
+    woods = map_generation.dungeon_make(36,36,9,roundedness=10)
+
+    #t = Tile_Map(height, water, woods, "Assets/Textures.png", "Assets/Texture Masks.png", 128, 128, 8*globals.screen_size/1024)
+    t = Tile_Map(height, water, woods, "Assets/Textures.png", "Assets/Texture Masks.png", 256, 256, 4*globals.screen_size/1024)
     
     rm = t.draw()
+    pygame.image.save(rm,"screen.png")
 
+    #unmute the output
+    sys.stdout = save_stdout
+
+    print "Net Time:",time.time()-wall
     i = 0
     clock = pygame.time.Clock()
     while(True):
@@ -219,6 +378,8 @@ if __name__ == '__main__':
                 if(event.key == K_ESCAPE):
                     pygame.quit() 
                     sys.exit()
+                elif(event.key == K_F2):
+                    pygame.image.save(globals.window_surface,"screen.png")
                 elif(event.key == K_F1):
                     h = map_generation.perlin_main(128, 20, 10, 6)
                     t = Tile_Map(h, w, "Assets/Huge Tileset.png",64,64, 16)

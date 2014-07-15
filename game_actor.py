@@ -28,7 +28,7 @@ class Game_Actor(Game_Object):
         Game_Object.input(self,event)
 
         if (event.type == KEYDOWN):
-            if(event.key == K_F5):
+            if(event.key == K_F6):
                 print self.m_unit.m_current_health
 
 
@@ -72,13 +72,15 @@ class Player_Actor(Game_Actor):
 
         Game_Actor.input(self,event)
 
-        if pygame.mouse.get_pressed()[0]:
+        if pygame.mouse.get_pressed()[0]: # left click
+
             self.m_target = pygame.mouse.get_pos()
 
-        elif pygame.mouse.get_pressed()[2]:
-            print "Right Click"
-            if(distance(self.m_pos,self.m_target) < self.m_unit.get("attack_range")):
-                other = globals.screens["Game"].object_at(self.m_target)
+        elif pygame.mouse.get_pressed()[2]: # right click
+
+            if(distance(self.m_pos,pygame.mouse.get_pos()) < self.m_unit.get("attack_range")):
+
+                other = globals.screens["Game"].object_at(pygame.mouse.get_pos(),self)
 
                 if(other != None and hasattr(other, "m_unit")):
 

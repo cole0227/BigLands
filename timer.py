@@ -44,4 +44,4 @@ class Timer(object):
 
     def __str__(self):
 
-        return str(self.current)+":"+str(self.delay)+":"+str(self.time)
+        return str(time.time()-self.current)+":"+str(self.delay)+":"+str(self.time)
