@@ -1,6 +1,8 @@
 import sys
 import cStringIO
+import gc
 import time
+import math
 import sys
 import random
 from collections import defaultdict
@@ -13,7 +15,6 @@ import pygame
 from pygame.locals import *
 import pygame.time
 import pygame.font
-
 import gaussian_blur
 from util import *
 from sprite_sheet import *
@@ -109,12 +110,11 @@ class Tile_Map(object):
         #let's set up the collision map:
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
-                if(self.m_height_map[y][x]>5 and self.m_typemap[x][y] != 8 and self.m_typemap[x][y] != 9):
+                if(self.m_height_map[y][x]>5 and self.m_typemap[x][y] != 8 and self.m_height_map[y][x]<=22):
                     if(self.m_height_map[y][x]<=88):
                         self.m_collision_map[x][y] = 0
                     else:
                         self.m_collision_map[x][y] = 0.7
-
 
     def march_assist(self,x,y,type):
 
@@ -370,16 +370,10 @@ class Tile_Map(object):
 
                     elif(tobe[x][y]==2):
                         tile.get().blit(road,(0,0))
-                    
 
     def draw(self):
 
         surf = pygame.Surface((self.m_tile_size*self.m_width,self.m_tile_size*self.m_height))
-        
-        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(  0,  0))
-        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(750,  0))
-        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(  0,750))
-        surf.blit(self.m_sprite_sheet.image_by_index(750,0),(750,750))
         
         for x in range(0,self.m_width):
             for y in range(0,self.m_height):
@@ -404,9 +398,11 @@ class Game_Map(object):
         wall = time.time()
 
         #begin mapping
-        water = map_generation.WeightedCaveFactory(40*tiles/256, 40*tiles/256, 0.45).gen_map()
+        water = map_generation.WeightedCaveFactory(int(12*math.log(tiles)-40),int(12*math.log(tiles)-40), 0.45).gen_map()
 
         height = map_generation.perlin_main(tiles, 180*tiles/256, 14, 10)
+        dist = stats_percentile(height).astype(int)
+        height = matrix_redist(height,(0,5,10,17,25,37,50,70,100))
 
         woods = map_generation.dungeon_make(int(36*tiles/256.0),int(36*tiles/256.0),9,roundedness=10)
 
@@ -417,7 +413,9 @@ class Game_Map(object):
 
         #unmute the output
         sys.stdout = save_stdout
-
+        print "Water Dist:",stats_percentile(tile_map.m_water_map).astype(int)
+        print "Wood Dist:",(stats_percentile(tile_map.m_wood_map)*100).astype(int)/100.0
+        print "Height Dist:",dist,"->",stats_percentile(height).astype(int)
         print "Net Time:",time.time()-wall
 
     def get_surface(self):
@@ -436,13 +434,17 @@ if __name__ == '__main__':
     globals.window_surface = pygame.display.set_mode((1024,1024), 0, 32)
     globals.window_surface.fill((0,0,100))
     globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
-    globals.sprite_road = pygame.image.load('Assets/Road.png').convert_alpha()
+    globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
     pygame.display.set_caption("Tile Test")
     pygame.display.update()
+    mp = None
 
-    mp = Game_Map(8192,256).get_surface()
-    globals.window_surface.blit(mp,(0,0))
-    pygame.image.save(mp,"screen.png")
+    for i in range(0,9):
+        mp = Game_Map(2048,128+i*64).get_surface()
+        gc.collect()
+        pygame.image.save(mp,str(128+i*64)+".png")
+        gc.collect()
+        globals.window_surface.blit(pygame.transform.scale(mp,(1024,1024)),(0,0))
 
     pygame.display.update()
     clock = pygame.time.Clock()
@@ -457,69 +459,3 @@ if __name__ == '__main__':
                 if(event.key == K_ESCAPE):
                     pygame.quit() 
                     sys.exit()
-
-if __name__ == '__main__' and 0==1:
-
-    #mute the output of this shit
-    save_stdout = sys.stdout
-    sys.stdout = cStringIO.StringIO()
-
-    wall = time.time()
-
-    #core initiation
-    pygame.init()
-    pygame.font.init()
-    random.seed()
-    globals.screen_size=1024*5
-    globals.window_surface = pygame.display.set_mode((min(globals.screen_size,1024),min(globals.screen_size,1024)), 0, 32)
-    globals.window_surface.fill((0,0,100))
-    globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
-    globals.sprite_road = pygame.image.load('Assets/Road.png').convert_alpha()
-    pygame.display.set_caption("Tile Test")
-    pygame.display.update()
-
-    #water = map_generation.WeightedCaveFactory(20, 20, 0.45).gen_map()
-    water = map_generation.WeightedCaveFactory(40, 40, 0.45).gen_map()
-
-    #height = map_generation.perlin_main(128, 45, 14, 10)
-    height = map_generation.perlin_main(256, 180, 14, 10)
-
-    #woods = map_generation.dungeon_make(18,18,9,roundedness=10)
-    woods = map_generation.dungeon_make(36,36,9,roundedness=10)
-
-    #t = Tile_Map(height, water, woods, "Assets/Textures.png", "Assets/Texture Masks.png", 128, 128, 8*globals.screen_size/1024)
-    t = Tile_Map(height, water, woods, "Assets/Textures.png", "Assets/Texture Masks.png", 256, 256, 4*globals.screen_size/1024)
-    
-    rm = t.draw()
-    pygame.image.save(rm,"screen.png")
-
-    #unmute the output
-    sys.stdout = save_stdout
-
-    print "Net Time:",time.time()-wall
-    i = 0
-    clock = pygame.time.Clock()
-    while(True):
-        clock.tick(60)
-        wall = time.time()
-        i+=1
-
-        globals.window_surface.blit(rm,(0,0))
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit() 
-                sys.exit()
-            elif event.type == KEYDOWN:
-
-                if(event.key == K_ESCAPE):
-                    pygame.quit() 
-                    sys.exit()
-                elif(event.key == K_F2):
-                    pygame.image.save(globals.window_surface,"screen.png")
-                elif(event.key == K_F1):
-                    h = map_generation.perlin_main(128, 20, 10, 6)
-                    t = Tile_Map(h, w, "Assets/Huge Tileset.png",64,64, 16)
-        if(i>1000):
-            print "Delta:",(time.time()-wall)
-            i=0

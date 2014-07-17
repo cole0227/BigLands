@@ -1,10 +1,12 @@
 import random
 import sys
 import copy
+
 import pygame
 import pygame.time
 import pygame.image
 import numpy
+from scipy.misc import imsave
 
 import globals
 from sprite_sheet import *
@@ -56,12 +58,93 @@ def stats_percentile( amatrix ):
     return final
 
 #
+# Return values within a certain range
+#
+def elevation_selection( amatrix, low, high, lowfill, highfill ):
+
+    size = int( amatrix.size ** ( 0.5 ) )
+    selection = numpy.zeros(( size, size )) + lowfill
+
+    for x in range( 0, size ):
+    
+        for y in range( 0, size ):
+        
+            if( amatrix[x][y] >=  low and amatrix[x][y] <= high ):
+            
+                selection[x][y] = amatrix[x][y]
+                
+            elif( amatrix[x][y] >= high ):
+            
+                selection[x][y] = highfill
+            
+    return selection
+
+#
+# changes a value in a matrix
+#
+def matrix_fromto(amatrix,start,end):
+
+    size = int( amatrix.size ** ( 0.5 ) )
+    for x in range( 0, size ):
+    
+        for y in range( 0, size ):
+    
+            if(amatrix[x][y]==start):
+                
+                amatrix[x][y]=end
+            
+    
+    return amatrix
+
+#
+# redistributes according to the given value arrays
+#
+def matrix_redist(amatrix, vals):
+
+    portions = len(vals)-1
+
+    processed_matrix = matrix_scale(amatrix,vals[0],vals[portions])
+    size = int( processed_matrix.size ** ( 0.5 ) )
+    flat_matrix = processed_matrix.reshape( -1 )
+    sort = flat_matrix.argsort()
+    final_matrix = numpy.zeros((size,size))
+
+    #
+    # Returns the element for the matching percent
+    #
+    def find_percentile( percent ):
+        
+        return sort[ min( max( int( ( processed_matrix.size - 1 ) * percent / 100), 0 ), processed_matrix.size - 1 ) ]
+
+    cliffs_matrix = numpy.zeros((portions+1))
+    cliffs_matrix[0]=flat_matrix[sort[0]]
+
+    for i in range(1,portions+1):
+        
+        cliffs_matrix[i] = flat_matrix[find_percentile(100.0*i/portions)]
+
+        if(vals[i]-vals[i-1] != 0 and cliffs_matrix[i-1]-cliffs_matrix[i] != 0):
+
+            final_matrix += matrix_scale(
+                elevation_selection(processed_matrix, 
+                                    cliffs_matrix[i-1],
+                                    cliffs_matrix[i], 
+                                    cliffs_matrix[i-1], 
+                                    cliffs_matrix[i]),
+                0,vals[i]-vals[i-1])
+
+    return final_matrix
+
+#
 # Basic value clamping
 #
 def clamp(l,m,g):
     
     return max(l,min(g,m))
 
+#
+# Basic Distance Calculation
+#
 def distance(pos1,pos2):
 
     return ( (pos1[0]-pos2[0]) ** 2 + (pos1[1]-pos2[1]) ** 2 ) ** 0.5
@@ -107,4 +190,16 @@ def save_icon(u=-1,t=-1,ox=-1,oy=-1,name=None,ico=None):
     #Reset all our variables for the next iteration
     u,t,ox,oy,name,ico=-1,-1,-1,-1,None,None
 
-#print pygame.font.get_fonts()
+if __name__ == '__main__':
+
+    #print pygame.font.get_fonts()
+    size = 129
+    height = numpy.zeros((size,size))
+
+    for x in range( 0, size ):
+        for y in range( 0, size ):
+            height[x][y] = (x-size/2)**2+(y-size/2)**2
+
+    imsave("1.png",height)
+    height = matrix_redist(height,(0,30,100))
+    imsave("2.png",height)
