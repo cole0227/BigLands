@@ -106,31 +106,21 @@ def matrix_redist(amatrix, vals):
     processed_matrix = matrix_scale(amatrix,vals[0],vals[portions])
     size = int( processed_matrix.size ** ( 0.5 ) )
     flat_matrix = processed_matrix.reshape( -1 )
-    sort = flat_matrix.argsort()
     final_matrix = numpy.zeros((size,size))
-
-    #
-    # Returns the element for the matching percent
-    #
-    def find_percentile( percent ):
-        
-        return sort[ min( max( int( ( processed_matrix.size - 1 ) * percent / 100), 0 ), processed_matrix.size - 1 ) ]
-
-    cliffs_matrix = numpy.zeros((portions+1))
-    cliffs_matrix[0]=flat_matrix[sort[0]]
+    perc = [0]*(portions+1)
+    for i in range(0,portions+1):
+        perc[i]=100.0*i/portions
+    perc = numpy.percentile(flat_matrix,perc)
 
     for i in range(1,portions+1):
         
-        cliffs_matrix[i] = flat_matrix[find_percentile(100.0*i/portions)]
-
-        if(vals[i]-vals[i-1] != 0 and cliffs_matrix[i-1]-cliffs_matrix[i] != 0):
+        perc[i]
+        if(vals[i]-vals[i-1] != 0 and perc[i-1]-perc[i] != 0):
 
             final_matrix += matrix_scale(
                 elevation_selection(processed_matrix, 
-                                    cliffs_matrix[i-1],
-                                    cliffs_matrix[i], 
-                                    cliffs_matrix[i-1], 
-                                    cliffs_matrix[i]),
+                                    perc[i-1], perc[i], 
+                                    perc[i-1], perc[i]),
                 0,vals[i]-vals[i-1])
 
     return final_matrix
@@ -193,7 +183,7 @@ def save_icon(u=-1,t=-1,ox=-1,oy=-1,name=None,ico=None):
 if __name__ == '__main__':
 
     #print pygame.font.get_fonts()
-    size = 129
+    size = 1290
     height = numpy.zeros((size,size))
 
     for x in range( 0, size ):
@@ -201,5 +191,5 @@ if __name__ == '__main__':
             height[x][y] = (x-size/2)**2+(y-size/2)**2
 
     imsave("1.png",height)
-    height = matrix_redist(height,(0,30,100))
+    height = matrix_redist(height,(0,34,80,90,100))
     imsave("2.png",height)
