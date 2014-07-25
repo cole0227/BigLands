@@ -11,6 +11,7 @@ import pygame.font
 
 import globals
 from sprite_sheet import *
+import tile_map
 from roman import *
 from game_object import *
 from screen import *
@@ -38,7 +39,7 @@ def main_init():
     #Load in Sprites:
     globals.sprite_cube = pygame.image.load('Assets/GreenBox.png').convert_alpha()
     globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
-    globals.sprite_road = pygame.image.load('Assets/Road.png').convert_alpha()
+    globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
     globals.sprite_icon = pygame.image.load(random_icon())
     globals.sprite_icon.convert_alpha()
     globals.sprite_icon.set_colorkey((0,0,0))
