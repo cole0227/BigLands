@@ -48,6 +48,15 @@ screens = {}
 global sprite_cube
 sprite_cube = None
 
+global sprite_house
+sprite_house = None
+
+global sprite_road
+sprite_road = None
+
+global sprite_tree
+sprite_tree = None
+
 global sprite_icon
 sprite_icon = None
 

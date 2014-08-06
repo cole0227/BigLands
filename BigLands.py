@@ -2,6 +2,8 @@ import sys
 import random
 import copy
 import time
+import os
+from multiprocessing import Process, Queue
 
 import pygame
 from pygame.locals import *
@@ -11,7 +13,7 @@ import pygame.font
 
 import globals
 from sprite_sheet import *
-import tile_map
+from tile_map import *
 from roman import *
 from game_object import *
 from screen import *
@@ -24,8 +26,19 @@ def main_init():
     def game_screen():
         globals.current_screen = "Game"
 
+    def new_game_screen():
+        globals.current_screen = "New Game"
+
     def nothing():
         pass
+
+    def make_map():
+
+        #q = Queue()
+
+        p = Process(target=generate_map,args=(96,0))
+        p.start()
+
 
     #core initiation
     pygame.init()
@@ -39,6 +52,7 @@ def main_init():
     #Load in Sprites:
     globals.sprite_cube = pygame.image.load('Assets/GreenBox.png').convert_alpha()
     globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
+    globals.sprite_house = pygame.image.load('Assets/House.png').convert_alpha()
     globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
     globals.sprite_icon = pygame.image.load(random_icon())
     globals.sprite_icon.convert_alpha()
@@ -55,9 +69,15 @@ def main_init():
     # Make the Screens
     Screen("Main Menu").add()
 
-    globals.screens["Main Menu"].add_button(Button("Big Lands",(20,20,1,1),game_screen,7))
-    globals.screens["Main Menu"].add_button(Button("Play",(60,100,70,45),game_screen,4))
-    globals.screens["Main Menu"].add_button(Button("Quit",(60,150,70,45),main_quit,4))
+    globals.screens["Main Menu"].add_button(Button("Big Lands",(20,20),nothing,7))
+    globals.screens["Main Menu"].add_button(Button("Play",(60,100),game_screen,4))
+    globals.screens["Main Menu"].add_button(Button("New Game",(60,150),new_game_screen,4))
+    globals.screens["Main Menu"].add_button(Button("Quit",(60,200),main_quit,4))
+
+    Screen("New Game").add()
+    globals.screens["New Game"].add_button(Button("New Game",(20,20),nothing,7))
+    globals.screens["New Game"].add_button(Button("Make Map",(60,100),make_map,4))
+
     globals.current_screen = "Main Menu"
     Game("Game").add()
     print "Finished Init"

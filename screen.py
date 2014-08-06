@@ -8,12 +8,15 @@ import globals
 
 class Button(object):
 
-    def __init__(self,text,rect, action, size=5):
+    def __init__(self, text, posn, action, size=5):
 
-        self.m_text = globals.basic_font[size].render(text,1,(240,220,200))
-        self.m_shadow = globals.basic_font[size].render(text,1,(0,0,0))
+        my_text = globals.basic_font[size]
+        size = my_text.size(text)
+
         self.m_name = text
-        self.m_rect = rect
+        self.m_text = my_text.render(text,1,(240,230,140))
+        self.m_shadow = my_text.render(text,1,(0,0,0))
+        self.m_rect = (posn[0],posn[1], size[0], size[1])
         self.m_action = action
 
     def draw(self):
@@ -34,7 +37,6 @@ class Button(object):
                 if(event.pos[1] > self.m_rect[1] and event.pos[1] < self.m_rect[3] + self.m_rect[1]):
 
                     self.act()
-
 
 class Screen(object):
 

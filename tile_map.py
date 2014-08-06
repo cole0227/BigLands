@@ -5,7 +5,10 @@ import time
 import math
 import sys
 import random
+import os
 from collections import defaultdict
+
+import BigLands
 
 import numpy
 import scipy
@@ -155,8 +158,8 @@ class Tile_Map(object):
                     if(self.m_height_map[y][x]>92):
                         self.m_typemap[x][y]=3 # gold rock
 
-                    if(self.m_height_map[y][x]>85):
-                        self.m_typemap[x][y]=11 # light rock
+                    elif(self.m_height_map[y][x]>84):
+                        self.m_typemap[x][y]=10 # light rock
 
                     elif(self.m_height_map[y][x]>75):
                         self.m_typemap[x][y]=2 # dark rock
@@ -256,6 +259,7 @@ class Tile_Map(object):
                 self.m_map[x][y].append(Tile(-1,surf))
 
         self.blit(x1,y1,x2,y2)
+        self.houses(x1,y1,x2,y2)
         self.trees(x1,y1,x2,y2)
 
     def blit(self,x1,y1,x2,y2):
@@ -329,7 +333,10 @@ class Tile_Map(object):
             for y in range(y1,y2):
                 if(self.m_typemap[x][y] != 8 
                    and self.m_typemap[x][y] != 9
-                   and self.m_height_map[y][x]<88
+                   and self.m_typemap[x][y] != 2
+                   and self.m_typemap[x][y] != 3
+                   and self.m_typemap[x][y] != 10
+                   and self.m_height_map[y][x]<86
                    and self.m_height_map[y][x]>20):
 
                     if(self.m_wood_map[x][y] > self.m_tree_threshhold):
@@ -397,6 +404,42 @@ class Tile_Map(object):
 
                     elif(tobe[x][y]==2):
                         tile.get().blit(road,(0,0))
+
+    def houses(self,x1,y1,x2,y2):
+
+        house = pygame.transform.scale(globals.sprite_house,(self.m_tile_size*3,self.m_tile_size*3))
+
+        tobe = numpy.zeros((self.m_width-x1,self.m_height-x1))
+
+        #populate the data in the matrices
+        for x in range(x1+2,x2):
+            for y in range(y1+2,y2):
+                
+                if(tobe[x-x1][y-y1] == 0 and random.random() < 0.005):
+
+                    count = 0
+                    for x3 in range(x-2,x+1):
+                        for y3 in range(y-2,y+1):
+
+                            if(self.m_typemap[x3][y3] != 8 
+                               and self.m_typemap[x3][y3] != 9
+                               and self.m_height_map[y3][x3]>5
+                               and tobe[x3-x1][y3-y1] != 1):
+                                count+=1
+                            else:
+                                break
+
+                    if(count == 9):
+                        for x3 in range(x-2,x+1):
+                            for y3 in range(y-2,y+1):
+                                tobe+=1
+
+                                #prevent trees
+                                self.m_wood_map[x3][y3] -= self.m_tree_threshhold
+                                self.m_wood_map_blurry[x3][y3] += self.m_road_threshhold
+
+                                print '(',x3,',',y3,')',x1,'-',x2,' ',y1,'-',y2
+                                self.m_map[x3][y3][0].get().blit(house,(0,0),(self.m_tile_size*(x3-x+2),self.m_tile_size*(y3-y+2),self.m_tile_size,self.m_tile_size))
 
     def draw(self):
 
@@ -499,8 +542,8 @@ class Chunked_Map(object):
         return self.m_surface_array[row][col]
 
     def clear_chunks(self):
-        self.m_surface_array = [([0]*(self.m_tiles/self.m_chunk_size)) for t in [0]*(self.m_tiles/self.m_chunk_size)]
 
+        self.m_surface_array = [([0]*(self.m_tiles/self.m_chunk_size)) for t in [0]*(self.m_tiles/self.m_chunk_size)]
 
     def gen_chunks(self,tile_map):
 
@@ -544,7 +587,8 @@ class Game_Map(object):
         return surf
 
     def out_chunks(self,save):
-        print "Blitting:",
+
+        print "Saving:",
         for x in range(0,self.m_tiles/16):
             for y in range(0,self.m_tiles/16):
 
@@ -554,11 +598,21 @@ class Game_Map(object):
                 self.m_surf.blit(pygame.transform.scale(surf,(self.m_chunk_size*16,self.m_chunk_size*16)),(x*self.m_chunk_size*16,y*self.m_chunk_size*16))
                 gc.collect()
                 pygame.image.save(surf,"Saved Games/"+str(save)+"/"+str(self.m_tiles)+"_("+str(x)+","+str(y)+")_chunk.png")
-                globals.loading_message = "Blitting: "+str(int(100*(y+x*(self.m_tiles/16.0)) /(self.m_tiles/16.0) / (self.m_tiles/16.0)))+"%"
+                globals.loading_message = "Saving: "+str(int(100*(y+x*(self.m_tiles/16.0)) /(self.m_tiles/16.0) / (self.m_tiles/16.0)))+"%"
+                print str(int(100*(y+x*(self.m_tiles/16.0)) /(self.m_tiles/16.0) / (self.m_tiles/16.0)))+"%",
+
+        pygame.image.save(self.m_surf,"Saved Games/"+str(save)+"/"+str(self.m_tiles)+"_map.png")
         globals.loading_message = "Blitting: 100%"
         gc.collect()
 
-if __name__ == '__main__':
+def generate_map(i,q):
+
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
+    globals.window_surface = pygame.display.set_mode((1,1), pygame.NOFRAME)
+    Game_Map(i).out_chunks(q)
+
+
+if __name__ == '__main_________':
 
     pygame.init()
     pygame.font.init()
@@ -566,53 +620,10 @@ if __name__ == '__main__':
     globals.window_surface = pygame.display.set_mode((512,512), 0, 32)
     globals.window_surface.fill((0,0,100))
     globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
+    globals.sprite_house = pygame.image.load('Assets/House.png').convert_alpha()
     globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
     pygame.display.set_caption("Tile Test")
     pygame.display.update()
     mp = Game_Map(96)
     mp.out_chunks(0)
-    pygame.image.save(mp.m_surf,"96.png")
-else:
-    pygame.init()
-    pygame.font.init()
-    random.seed()
-    globals.window_surface = pygame.display.set_mode((512,512), 0, 32)
-    globals.window_surface.fill((0,0,100))
-    globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
-    globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
-    pygame.display.set_caption("Tile Test")
-    pygame.display.update()
-    for i in range(96,127,128):
 
-        wall = time.time()
-
-        mp = Chunked_Map()
-        tm = mp.init(i*32,i)
-        for x in range(1,2):#i/16):
-            for y in range(1,2):#,i/16):
-
-                mp.gen_chunk(tm,x,y)
-                surf = mp.get_chunk(x,y)
-                mp.clear_chunks()
-                gc.collect()
-                wall2 = time.time()
-                pygame.image.save(surf,str(i)+"_("+str(x)+","+str(y)+")_chunk.png")
-                wall += time.time() - wall2
-        gc.collect()
-
-        globals.window_surface.blit(pygame.transform.scale(surf,(512,512)),(0,0))
-        pygame.display.update()
-
-        print i,":",time.time()-wall
-
-    clock = pygame.time.Clock()
-    while(True):
-        clock.tick(60)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit() 
-                sys.exit()
-            elif event.type == KEYDOWN:
-                if(event.key == K_ESCAPE):
-                    pygame.quit() 
-                    sys.exit()
