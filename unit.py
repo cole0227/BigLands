@@ -117,8 +117,6 @@ class Actor_Unit(Unit):
 
     def recalc_bonus(self):
 
-        oldHP = self.get("health")
-
         for attrib in self.m_attribs.keys():
 
             self.m_attribs[attrib].reset()
@@ -130,21 +128,21 @@ class Actor_Unit(Unit):
         if "strength" in self.m_attribs:
 
             self.m_attribs["health"].add(self.get("strength"))
-            self.m_attribs["armour"].add(self.get("strength"))
+            self.m_attribs["armour"].add(self.get("strength")*0.4)
 
         if "dexterity" in self.m_attribs:
 
-            self.m_attribs["attack_speed"].add(2*self.get("dexterity"))
-            self.m_attribs["movement_speed"].add(2*self.get("dexterity"))
+            self.m_attribs["attack_speed"].add(self.get("dexterity")*0.8)
+            self.m_attribs["movement_speed"].add(self.get("dexterity"))
 
         if "constitution" in self.m_attribs:
 
-            self.m_attribs["health"].add(3*self.get("constitution"))
+            self.m_attribs["health"].add(self.get("constitution")*3)
 
         if "intelligence" in self.m_attribs:
 
-            self.m_attribs["attack_speed"].add(self.get("intelligence"))
-            self.m_attribs["dodge_chance"].add(self.get("intelligence"))
+            self.m_attribs["attack_speed"].add(self.get("intelligence")*0.4)
+            self.m_attribs["dodge_chance"].add(self.get("intelligence")*0.3)
 
         if "wisdom" in self.m_attribs:
 
@@ -152,10 +150,8 @@ class Actor_Unit(Unit):
 
         if "charisma" in self.m_attribs:
 
-            self.m_attribs["critical_chance"].add(self.get("charisma"))
-            self.m_attribs["critical_damage"].add(2*self.get("charisma"))
-
-        self.m_current_health *= float(self.get("health"))/oldHP
+            self.m_attribs["critical_chance"].add(self.get("charisma")*0.5)
+            self.m_attribs["critical_damage"].add(self.get("charisma")*2)
 
     def merge(self,unit):
 
@@ -169,11 +165,12 @@ class Actor_Unit(Unit):
 
         self.m_current_health *= float(self.get("health"))/oldHP
 
-    def level_up(self):
+    def level_up(self,level=1):
 
         oldHP = self.get("health")
 
-        self.m_level += 1
+        self.m_level += level
+        self.recalc_bonus()
 
         self.m_current_health *= float(self.get("health"))/oldHP
 
@@ -234,8 +231,7 @@ if __name__ == '__main__':
 
     player1 = source_unit_scout
     player2 = source_unit_nme.copy()
-    for i in range(0,10):
-        player2.level_up()
+    player2.level_up(100)
 
     print player1
     print player2,"\n"
