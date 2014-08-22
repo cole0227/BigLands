@@ -51,6 +51,7 @@ class Tile_Map(object):
         self.m_water_map = numpy.array(water_map)
         self.m_collision_map = numpy.zeros((width,height))+1
         
+        message("Correcting Map Geometry")
         print self.m_height_map.shape,"/",self.m_water_map.shape
         self.m_height_map = scipy.ndimage.zoom(self.m_height_map, (max(width+1.4,height+1.4)**2/self.m_height_map.size)**0.5, order=4)
         print  (max(width+1.0,height+1.0)**2/self.m_height_map.size)**0.5
@@ -60,6 +61,7 @@ class Tile_Map(object):
 
         self.march()
 
+        message("Preparing the Wood Map")
         #woods time
         maxX = 0
         maxY = 0
@@ -86,6 +88,7 @@ class Tile_Map(object):
         self.m_wood_map = scipy.ndimage.zoom(self.m_wood_map, (max(width+1.0,height+1.0)**2/self.m_wood_map.size)**0.5, order=4)
         self.m_wood_map_blurry = matrix_scale(gaussian_blur.gaussian_blur( self.m_wood_map, 1 ),0,1)
         
+
         #let's erode a bit
         newmap = numpy.zeros((self.m_width+1,self.m_height+1))
         for x in range(0,self.m_width):
@@ -149,6 +152,7 @@ class Tile_Map(object):
 
         self.m_typemap = numpy.zeros((self.m_width+1,self.m_height+1))
 
+        message("Typing The Terrain")
         print "Typing..."
         for x in range(0,self.m_width+1):
             for y in range(0,self.m_height+1):
@@ -490,17 +494,25 @@ class Chunked_Map(object):
         #begin mapping
         self.clear_chunks()
         globals.loading_message = "Generating Coasts"
+        message("Generating Coasts")
+
         water = map_generation.WeightedCaveFactory(int(12*math.log(tiles)-40),int(12*math.log(tiles)-40), 0.45).gen_map()
 
         globals.loading_message = "Generating Elevations"
+        message("Generating Elevations")
+
         height = map_generation.perlin_main(tiles, 180*tiles/256, 14, 10)
+        message("Scaling Elevations")
         dist = matrix_scale(stats_percentile(height),0,100).astype(int)
         height = matrix_redist(height,height_dist_list)
 
         globals.loading_message = "Generating Forests"
+        message("Generating Forests")
         woods = map_generation.dungeon_make(int(36*tiles/256.0/2)*2,int(36*tiles/256.0/2)*2,9,roundedness=10)
 
         globals.loading_message = "Coalesing the Map"
+        message("Coalesing the Map")
+
         tile_map = Tile_Map(height, water, woods, textures, masks, tiles, tiles, size/tiles)
         
         #self.m_surface = tile_map.draw()
@@ -570,10 +582,10 @@ class Chunked_Map(object):
 
 class Game_Map(object):
 
-    def __init__(self, tiles=256, chunk_size=16, height_dist_list=(0,8,13,20,27,34,40,47,56,67,100), textures="Assets/Textures.png",masks="Assets/Texture Masks Bigger.png"):
+    def __init__(self, tiles=256, tile_size=128, chunk_size=16, height_dist_list=(0,8,13,20,27,34,40,47,56,67,100), textures="Assets/Textures.png",masks="Assets/Texture Masks Bigger.png"):
 
         self.m_map = Chunked_Map()
-        self.m_tm = self.m_map.init(tiles*128,tiles,chunk_size,height_dist_list,textures,masks)
+        self.m_tm = self.m_map.init(tiles*tile_size,tiles,chunk_size,height_dist_list,textures,masks)
         self.m_tiles=self.m_map.m_tiles
         self.m_chunk_size = chunk_size
         self.m_surf = pygame.Surface((tiles*16,tiles*16))
@@ -589,6 +601,7 @@ class Game_Map(object):
     def out_chunks(self,save):
 
         print "Saving:",
+        ensure_dir(os.getcwd()+"/Saved Games/"+str(save)+"/")
         for x in range(0,self.m_tiles/16):
             for y in range(0,self.m_tiles/16):
 
@@ -597,22 +610,27 @@ class Game_Map(object):
                 self.m_map.clear_chunks()
                 self.m_surf.blit(pygame.transform.scale(surf,(self.m_chunk_size*16,self.m_chunk_size*16)),(x*self.m_chunk_size*16,y*self.m_chunk_size*16))
                 gc.collect()
-                pygame.image.save(surf,"Saved Games/"+str(save)+"/"+str(self.m_tiles)+"_("+str(x)+","+str(y)+")_chunk.png")
+                pygame.image.save(surf,"Saved Games/"+str(save)+"/"+str(x)+"_"+str(y)+"_chunk.png")
                 globals.loading_message = "Saving: "+str(int(100*(y+x*(self.m_tiles/16.0)) /(self.m_tiles/16.0) / (self.m_tiles/16.0)))+"%"
                 print str(int(100*(y+x*(self.m_tiles/16.0)) /(self.m_tiles/16.0) / (self.m_tiles/16.0)))+"%",
+                message("Saving Map: "+str(int(100*(y+x*(self.m_tiles/16.0)) /(self.m_tiles/16.0) / (self.m_tiles/16.0)))+"%")
 
-        pygame.image.save(self.m_surf,"Saved Games/"+str(save)+"/"+str(self.m_tiles)+"_map.png")
+        pygame.image.save(self.m_surf,"Saved Games/"+str(save)+"/map.png")
         globals.loading_message = "Blitting: 100%"
         gc.collect()
 
-def generate_map(i,q):
-
+def generate_map(i=80,q=0,s=32):
+    message("Started Generating World")
     os.environ["SDL_VIDEODRIVER"] = "dummy"
     globals.window_surface = pygame.display.set_mode((1,1), pygame.NOFRAME)
-    Game_Map(i).out_chunks(q)
+    globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
+    globals.sprite_house = pygame.image.load('Assets/House.png').convert_alpha()
+    globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
+    Game_Map(i,s).out_chunks(q)
+    message("")
 
 
-if __name__ == '__main_________':
+if __name__ == '__main__':
 
     pygame.init()
     pygame.font.init()
@@ -624,6 +642,6 @@ if __name__ == '__main_________':
     globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
     pygame.display.set_caption("Tile Test")
     pygame.display.update()
-    mp = Game_Map(96)
-    mp.out_chunks(0)
+    mp = Game_Map(256,32)
+    mp.out_chunks(3)
 

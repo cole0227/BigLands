@@ -13,7 +13,7 @@ pygame.font.init()
 pygame.display.init()
 
 global screen_resolution
-screen_resolution = (random.randint(1024,1680),random.randint(768,1050))
+screen_resolution = None
 
 global frame_rate
 frame_rate = 120

@@ -35,8 +35,7 @@ def main_init():
     def make_map():
 
         #q = Queue()
-
-        p = Process(target=generate_map,args=(96,0))
+        p = Process(target=generate_map,args=(96,))
         p.start()
 
 
@@ -46,6 +45,7 @@ def main_init():
     random.seed()
 
     #set up the window
+    globals.screen_resolution = (1300,600)
     globals.window_surface = pygame.display.set_mode((globals.screen_resolution[0],globals.screen_resolution[1]), 0, 32) 
     pygame.display.set_caption(globals.game_name)
 
@@ -70,13 +70,13 @@ def main_init():
     Screen("Main Menu").add()
 
     globals.screens["Main Menu"].add_button(Button("Big Lands",(20,20),nothing,7))
-    globals.screens["Main Menu"].add_button(Button("Play",(60,100),game_screen,4))
-    globals.screens["Main Menu"].add_button(Button("New Game",(60,150),new_game_screen,4))
-    globals.screens["Main Menu"].add_button(Button("Quit",(60,200),main_quit,4))
+    globals.screens["Main Menu"].add_button(Button("Play",(60,100),game_screen))
+    globals.screens["Main Menu"].add_button(Button("New Game",(60,150),new_game_screen))
+    globals.screens["Main Menu"].add_button(Button("Quit",(60,200),main_quit))
 
     Screen("New Game").add()
     globals.screens["New Game"].add_button(Button("New Game",(20,20),nothing,7))
-    globals.screens["New Game"].add_button(Button("Make Map",(60,100),make_map,4))
+    globals.screens["New Game"].add_button(Button("Make Map",(60,100),make_map))
 
     globals.current_screen = "Main Menu"
     Game("Game").add()

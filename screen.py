@@ -5,10 +5,11 @@ import pygame.time
 from pygame.locals import *
 
 import globals
+from util import *
 
 class Button(object):
 
-    def __init__(self, text, posn, action, size=5):
+    def __init__(self, text, posn, action, size=4):
 
         my_text = globals.basic_font[size]
         size = my_text.size(text)
@@ -44,6 +45,8 @@ class Screen(object):
 
         self.m_name = name
         self.m_buttons = []
+        self.m_message_font = globals.basic_font[6]
+        self.m_counter = 7
 
     def add(self):
 
@@ -61,10 +64,21 @@ class Screen(object):
 
     def update(self, delta):
 
-        pass
+        self.m_counter += delta
+
+        text = message()
+
+        if(self.m_counter > 0.2):
+
+            self.m_counter = 0
+            self.m_message_text_highlight = self.m_message_font.render(text,1,(240,230,140))
+            self.m_message_text_shadow = self.m_message_font.render(text,1,(0,0,0))
 
     def draw(self):
 
         for button in self.m_buttons:
 
 	       button.draw()
+
+        globals.window_surface.blit(self.m_message_text_shadow,(globals.screen_resolution[0]*2/3+2,globals.screen_resolution[1]*2/3+2))
+        globals.window_surface.blit(self.m_message_text_highlight,(globals.screen_resolution[0]*2/3,globals.screen_resolution[1]*2/3))

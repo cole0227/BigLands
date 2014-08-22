@@ -1,6 +1,7 @@
 import random
 import sys
 import copy
+import os
 
 import pygame
 import pygame.time
@@ -12,6 +13,33 @@ import globals
 from sprite_sheet import *
 
 execfile("font_fx.py")
+
+#
+# submits cross-thread-message
+#
+def message(mess=0):
+
+    if(mess == 0):
+        fo = open("Saved Games/message.tmp","r")
+        new = fo.read()
+        fo.close()
+        return new
+    else:
+        fo = open("Saved Games/message.tmp","w+")
+        fo.write(mess)
+        fo.close()
+
+
+#
+# makes sure that a given dir exists
+#
+def ensure_dir(f):
+    path = os.path.dirname(f)
+    try: 
+        os.makedirs(path)
+    except OSError:
+        if not os.path.isdir(path):
+            raise
 
 #
 # Finds the Largest and smallest element
