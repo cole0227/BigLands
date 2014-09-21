@@ -205,8 +205,65 @@ def save_icon(u=-1,t=-1,ox=-1,oy=-1,name=None,ico=None):
     else:
         pygame.image.save(under_texture,name)
 
-    #Reset all our variables for the next iteration
+    #Reset all our variables for the next iteration, and return some values
+    out = [globals.icon_list[ico],ox+6*oy,u]
     u,t,ox,oy,name,ico=-1,-1,-1,-1,None,None
+    return out
+
+def save_icon_double(u=-1,t=-1,ox=-1,oy=-1,name=None,ico=None,ico2=None,ico2_back=-1):
+
+    if(u == -1):
+        u = random.randint(0,17)
+
+    if(t == -1):
+        t = random.randint(0,17)
+
+    if(ox == -1):
+        ox = random.randint(0,5)
+
+    if(oy == -1):
+        oy = random.randint(0,2)
+
+    if(ico == None):
+        ico = random.randint(0,len(globals.icon_list)-1)
+
+    if(ico2 == None):
+        ico2 = random.randint(0,len(globals.icon_list)-1)
+
+    if(ico2_back == -1):
+        ico2_back = random.randint(0,15)
+
+
+    #loading the images
+    icon_under =    globals.icons_iu.image_by_index(512,u)
+    under_texture = globals.icons_ut.image_by_index(512,t)
+    icon = pygame.image.load(random_icon(ico))
+    icon.convert_alpha()
+
+    icon2 = pygame.image.load(random_icon(ico2))
+    icon2.convert_alpha()
+
+    icon.blit(icon_under,(0,0),None,pygame.BLEND_ADD)
+    icon2.blit(globals.icons_iu.image_by_index(512,random.randint(0,17)),(0,0),None,pygame.BLEND_ADD)
+
+    under_texture.blit(icon,(0,0))
+    under_texture.blit(globals.icons_overtest,(512*-ox,512*-oy))
+
+    icon2backing = globals.icons_corner_chunk.image_by_index(512,ico2_back)
+    icon2backing.blit(icon2,(0,0))
+    icon2backing = pygame.transform.scale(icon2backing,(140,140))
+    under_texture.blit(icon2backing,(0,0))
+
+    if(name == None):
+        pygame.image.save(under_texture,str(u)+" "+str(t)+" "+str(ox)+" "+str(oy)+" "+str(ico)+".png")
+    else:
+        pygame.image.save(under_texture,name)
+
+
+    #Reset all our variables for the next iteration, and return some values
+    out = [globals.icon_list[ico],ox+6*oy,u,globals.icon_list[ico2]]
+    u,t,ox,oy,name,ico,ico2,ico2_back=-1,-1,-1,-1,None,None,None,-1
+    return out
 
 if __name__ == '__main__':
 

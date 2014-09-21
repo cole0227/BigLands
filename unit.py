@@ -10,7 +10,7 @@ import globals
 from timer import *
 from util import *
 
-class attribute(object):
+class Attribute(object):
     
     def __init__(self, owner, base=100, growth=0, bonus=0):
 
@@ -51,9 +51,11 @@ class Unit(object):
 
         for attrib in self.m_attribs.keys():
             if(type(self.m_attribs[attrib]) is int):
-                self.m_attribs[attrib]=attribute(self,self.m_attribs[attrib])
+                self.m_attribs[attrib]=Attribute(self,self.m_attribs[attrib])
+            elif(type(self.m_attribs[attrib]) is Attribute):
+                pass
             else:
-                self.m_attribs[attrib]=attribute(self,self.m_attribs[attrib][0],self.m_attribs[attrib][1])
+                self.m_attribs[attrib]=Attribute(self,self.m_attribs[attrib][0],self.m_attribs[attrib][1])
 
     def set(self, attrib, value):
 
@@ -67,6 +69,18 @@ class Unit(object):
             return 0
             
         return value.get()
+
+    def merge_attrib(self,attrib,value):
+
+        curr = self.m_attribs.get(attrib)
+        
+        if(curr == None):
+            
+            self.m_attribs[attrib]=value
+
+        else:
+
+            self.m_attribs[attrib].merge(value)
 
     def copy(self):
 
@@ -296,7 +310,7 @@ def random_armour_piece(armour,bonus_count=0,level=0,mini=20,maxi=30):
     u.merge(random_bonus(mini,maxi,bonus_count))
 
     for k in u.m_attribs.keys():
-        u.m_attribs[k].merge(attribute(u,0,1,0))
+        u.m_attribs[k].merge(Attribute(u,0,1,0))
 
     return u
 
@@ -310,7 +324,7 @@ if __name__ == '__main__':
     source_unit_friar        = Actor_Unit({"health":(150,1), "health_regeneration":(1,0.05), "armour":(4,0.1),  "attack_speed":70,  "attack_damage":(28,1), "movement_speed":120, "critical_chance":0, "critical_damage":0, "dodge_chance":0})
     source_unit_warlock      = Actor_Unit({"health":(100,1), "health_regeneration":(1,0.05), "armour":(4,0.1),  "attack_speed":80,  "attack_damage":(61,1), "movement_speed":80 , "critical_chance":0, "critical_damage":0, "dodge_chance":0})
     source_unit_ranger       = Actor_Unit({"health":(80,1),  "health_regeneration":(1,0.05), "armour":(8,0.1),  "attack_speed":110, "attack_damage":(40,1), "movement_speed":110, "critical_chance":0, "critical_damage":0, "dodge_chance":0})
-    source_unit_scout        = Actor_Unit({"health":(100,1), "health_regeneration":(1,0.05), "armour":(4,0.1),  "attack_speed":115, "attack_damage":(47,1), "movement_speed":130, "critical_chance":50, "critical_damage":0, "dodge_chance":0})
+    source_unit_scout        = Actor_Unit({"health":(100,1), "health_regeneration":(1,0.05), "armour":(4,0.1),  "attack_speed":115, "attack_damage":(47,1), "movement_speed":130, "critical_chance":0, "critical_damage":0, "dodge_chance":0})
     #source_unit_scout.append(Unit({"armour":8}))
 
     source_class_shepherd   = Unit({"strength":(1,1.0), "dexterity":(1,1.0), "constitution":(1,1.0), "intelligence":(1,1.0), "wisdom":(3,1.8), "charisma":(3,1.8)})

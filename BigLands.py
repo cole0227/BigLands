@@ -23,6 +23,8 @@ from timer import *
 
 def main_init():
 
+    #inline definitions for button functions
+
     def game_screen():
         globals.current_screen = "Game"
 
@@ -32,12 +34,26 @@ def main_init():
     def nothing():
         pass
 
-    def make_map():
+    def make_map(q=96):
 
         #q = Queue()
-        p = Process(target=generate_map,args=(96,))
+        p = Process(target=generate_map,args=(q,))
         p.start()
 
+    def make_map_small():
+        make_map(128)
+
+    def make_map_medium():
+        make_map(192)
+
+    def make_map_big():
+        make_map(256)
+
+    def make_map_huge():
+        make_map(512)
+
+    def make_map_colossal():
+        make_map(1024)
 
     #core initiation
     pygame.init()
@@ -48,11 +64,12 @@ def main_init():
     globals.screen_resolution = (1300,600)
     globals.window_surface = pygame.display.set_mode((globals.screen_resolution[0],globals.screen_resolution[1]), 0, 32) 
     pygame.display.set_caption(globals.game_name)
+    message("")
 
     #Load in Sprites:
     globals.sprite_cube = pygame.image.load('Assets/GreenBox.png').convert_alpha()
     globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
-    globals.sprite_house = pygame.image.load('Assets/House.png').convert_alpha()
+    globals.sprite_house = pygame.image.load('Assets/House2.png').convert_alpha()
     globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
     globals.sprite_icon = pygame.image.load(random_icon())
     globals.sprite_icon.convert_alpha()
@@ -61,7 +78,9 @@ def main_init():
     globals.icons_iu = Sprite_Sheet("Assets/Game-Icons-Mods/icon_underlays.png","Alpha")
     globals.icons_ut = Sprite_Sheet("Assets/Game-Icons-Mods/underlays.png","Alpha")
     globals.icons_ov = Sprite_Sheet("Assets/Game-Icons-Mods/overlays2.png","Alpha")
+    globals.icons_corner_chunk = Sprite_Sheet("Assets/Game-Icons-Mods/corners.png","Alpha")
     globals.icons_overtest = pygame.image.load("Assets/Game-Icons-Mods/overlays2.png")
+
     globals.icons_overtest.convert_alpha()
 
     print "Loaded Sprites"
@@ -76,7 +95,12 @@ def main_init():
 
     Screen("New Game").add()
     globals.screens["New Game"].add_button(Button("New Game",(20,20),nothing,7))
-    globals.screens["New Game"].add_button(Button("Make Map",(60,100),make_map))
+    globals.screens["New Game"].add_button(Button("Make Tiny Map",(60,100),make_map))
+    globals.screens["New Game"].add_button(Button("Make Small Map",(60,150),make_map_small))
+    globals.screens["New Game"].add_button(Button("Make Medium Map",(60,200),make_map_medium))
+    globals.screens["New Game"].add_button(Button("Make Big Map",(60,250),make_map_big))
+    globals.screens["New Game"].add_button(Button("Make Huge Map",(60,300),make_map_huge))
+    globals.screens["New Game"].add_button(Button("Make Colossal Map",(60,350),make_map_colossal))
 
     globals.current_screen = "Main Menu"
     Game("Game").add()

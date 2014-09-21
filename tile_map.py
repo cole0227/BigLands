@@ -411,19 +411,19 @@ class Tile_Map(object):
 
     def houses(self,x1,y1,x2,y2):
 
-        house = pygame.transform.scale(globals.sprite_house,(self.m_tile_size*3,self.m_tile_size*3))
+        house = pygame.transform.scale(globals.sprite_house,(self.m_tile_size*4,self.m_tile_size*2))
 
         tobe = numpy.zeros((self.m_width-x1,self.m_height-x1))
 
         #populate the data in the matrices
-        for x in range(x1+2,x2):
-            for y in range(y1+2,y2):
+        for x in range(x1+3,x2):
+            for y in range(y1+3,y2):
                 
                 if(tobe[x-x1][y-y1] == 0 and random.random() < 0.005):
 
                     count = 0
-                    for x3 in range(x-2,x+1):
-                        for y3 in range(y-2,y+1):
+                    for x3 in range(x-3,x+1):
+                        for y3 in range(y-1,y+1):
 
                             if(self.m_typemap[x3][y3] != 8 
                                and self.m_typemap[x3][y3] != 9
@@ -433,9 +433,9 @@ class Tile_Map(object):
                             else:
                                 break
 
-                    if(count == 9):
-                        for x3 in range(x-2,x+1):
-                            for y3 in range(y-2,y+1):
+                    if(count == 8):
+                        for x3 in range(x-3,x+1):
+                            for y3 in range(y-1,y+1):
                                 tobe+=1
 
                                 #prevent trees
@@ -443,7 +443,7 @@ class Tile_Map(object):
                                 self.m_wood_map_blurry[x3][y3] += self.m_road_threshhold
 
                                 print '(',x3,',',y3,')',x1,'-',x2,' ',y1,'-',y2
-                                self.m_map[x3][y3][0].get().blit(house,(0,0),(self.m_tile_size*(x3-x+2),self.m_tile_size*(y3-y+2),self.m_tile_size,self.m_tile_size))
+                                self.m_map[x3][y3][0].get().blit(house,(0,0),(self.m_tile_size*(x3-x+3),self.m_tile_size*(y3-y+1),self.m_tile_size,self.m_tile_size))
 
     def draw(self):
 
@@ -619,12 +619,12 @@ class Game_Map(object):
         globals.loading_message = "Blitting: 100%"
         gc.collect()
 
-def generate_map(i=80,q=0,s=32):
+def generate_map(i=80,q=0,s=128):
     message("Started Generating World")
     os.environ["SDL_VIDEODRIVER"] = "dummy"
     globals.window_surface = pygame.display.set_mode((1,1), pygame.NOFRAME)
     globals.sprite_tree = pygame.image.load('Assets/Tree.png').convert_alpha()
-    globals.sprite_house = pygame.image.load('Assets/House.png').convert_alpha()
+    globals.sprite_house = pygame.image.load('Assets/House2.png').convert_alpha()
     globals.sprite_road = pygame.image.load('Assets/Brown_Road.png').convert_alpha()
     Game_Map(i,s).out_chunks(q)
     message("")
