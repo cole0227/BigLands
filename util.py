@@ -237,21 +237,28 @@ def save_icon_double(u=-1,t=-1,ox=-1,oy=-1,name=None,ico=None,ico2=None,ico2_bac
     #loading the images
     icon_under =    globals.icons_iu.image_by_index(512,u)
     under_texture = globals.icons_ut.image_by_index(512,t)
+
     icon = pygame.image.load(random_icon(ico))
     icon.convert_alpha()
 
     icon2 = pygame.image.load(random_icon(ico2))
     icon2.convert_alpha()
 
+    print (512*(ico2_back/4),512*(ico2_back%4),512,512)
+    icon2backing = globals.icons_corner_chunk.subsurface(512*(ico2_back/4),512*(ico2_back%4),512,512)
+    icon2backing.convert_alpha()
+
+    #begin building the basic image
     icon.blit(icon_under,(0,0),None,pygame.BLEND_ADD)
     icon2.blit(globals.icons_iu.image_by_index(512,random.randint(0,17)),(0,0),None,pygame.BLEND_ADD)
 
     under_texture.blit(icon,(0,0))
     under_texture.blit(globals.icons_overtest,(512*-ox,512*-oy))
 
-    icon2backing = globals.icons_corner_chunk.image_by_index(512,ico2_back)
+    #manipulating the top-left icon
+    icon2 = pygame.transform.scale(icon2,(400,400))
     icon2backing.blit(icon2,(0,0))
-    icon2backing = pygame.transform.scale(icon2backing,(140,140))
+    icon2backing = pygame.transform.scale(icon2backing,(160,160))
     under_texture.blit(icon2backing,(0,0))
 
     if(name == None):

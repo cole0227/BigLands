@@ -24,7 +24,7 @@ Effect = ("Tough", "Enduring", "Immortal",
 
 class Ability_Unit_Builder(object):
 
-    def __init__(self,name,level, count_attribs_limit=10, starting_attribs={}):
+    def __init__(self,name,level, count_attribs_limit=2, starting_attribs={}):
 
         self.m_name = name
         self.m_level = level
@@ -33,28 +33,29 @@ class Ability_Unit_Builder(object):
         self.m_count_attribs = 0
         self.m_count_attribs_limit = count_attribs_limit
 
-    def add(self,string,attrib_name,attrib, minimum=1):
+    def add(self,string,attrib_name,attrib, minimum=1, weight=1, min_value = 3.0):
 
         name = self.m_name.lower()
         instances = name.count(string)
 
         if(instances >= minimum and self.m_count_attribs < self.m_count_attribs_limit):
-            self.m_unit.merge_attrib(attrib_name,attrib)
-            self.m_count_attribs+=1
+            if(attrib.get() >= min_value):
+                self.m_unit.merge_attrib(attrib_name,attrib)
+                self.m_count_attribs+=weight
 
 
     def gen(self):
 
         stat_limits=[1,3,0.5,1.5]
         self.add("a","charisma",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])))
-        self.add("a","charisma",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=2)
+        self.add("a","charisma",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=2,weight=0)
         self.add("b","constitution",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])))
         self.add("e","wisdom",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])))
-        self.add("e","wisdom",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=3)
+        self.add("e","wisdom",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=3,weight=0)
         self.add("n","intelligence",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])))
-        self.add("n","intelligence",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=3)
+        self.add("n","intelligence",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=3,weight=0)
         self.add("s","dexterity",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])))
-        self.add("s","dexterity",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=3)
+        self.add("s","dexterity",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])),minimum=3,weight=0)
         self.add("t","strength",Attribute(self.m_unit,random.uniform(stat_limits[0],stat_limits[1]),random.uniform(stat_limits[2],stat_limits[3])))
 
         self.add("p","attack_damage",Attribute(self.m_unit,random.uniform(stat_limits[0]*2,stat_limits[1]*3),random.uniform(stat_limits[2],stat_limits[3])))
@@ -70,11 +71,15 @@ class Ability_Unit_Builder(object):
         self.add("h","health",Attribute(self.m_unit,random.uniform(stat_limits[0]*5,stat_limits[1]*5),random.uniform(stat_limits[2]*4,stat_limits[3]*6)),minimum=2)
         self.add("q","health",Attribute(self.m_unit,random.uniform(stat_limits[0]*5,stat_limits[1]*5),random.uniform(stat_limits[2]*4,stat_limits[3]*6)))
         self.add("i","health_regen",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)))
+        self.add("v","health_regen",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)))
         self.add("w","health_regen",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)))
 
         self.add("x","armour",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)))
+        self.add("x","armour",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)),minimum=2,weight=0)
         self.add("y","armour",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)))
+        self.add("y","armour",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)),minimum=2,weight=0)
         self.add("z","armour",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)))
+        self.add("z","armour",Attribute(self.m_unit,random.uniform(stat_limits[0]/2.0,stat_limits[1]/2.0),random.uniform(stat_limits[2]/2.0,stat_limits[3]/2.0)),minimum=2,weight=0)
 
         return self
 
@@ -93,8 +98,9 @@ if __name__ == '__main__':
     globals.icons_iu = Sprite_Sheet("Assets/Game-Icons-Mods/icon_underlays.png","Alpha")
     globals.icons_ut = Sprite_Sheet("Assets/Game-Icons-Mods/underlays.png","Alpha")
     globals.icons_ov = Sprite_Sheet("Assets/Game-Icons-Mods/overlays2.png","Alpha")
+    globals.icons_corner_chunk = pygame.image.load("Assets/Game-Icons-Mods/corners.png")
+    globals.icons_corner_chunk.convert_alpha()
     globals.icons_overtest = pygame.image.load("Assets/Game-Icons-Mods/overlays2.png")
-    globals.icons_corner_chunk = pygame.image.load("Assets/Game-Icons-Mods/corners.png","Alpha")
     globals.icons_overtest.convert_alpha()
 
     #generate an icon
@@ -103,7 +109,7 @@ if __name__ == '__main__':
 
     #manipulate the string
     ico_vals[0] = ico_vals[0][:-4] + random.choice([" with "," and "," of "," ajoined "]) + ico_vals[3][:-4]
-    ico_vals[0] = ico_vals[0].replace("-"," ").replace("_"," ")
+    ico_vals[0] = ico_vals[0].replace("-"," ").replace("_"," ").replace("dice six faces ","")
     ico_vals[0] = Effect[random.randint(0,len(Effect)-1)]+" "+ico_vals[0]
     if(ico_vals[1] > 13):
         ico_vals[0] = "Mega "+ico_vals[0]

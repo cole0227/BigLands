@@ -14,9 +14,11 @@ class Sprite_Sheet(object):
         try:
             if(conversion == None):
                 self.sheet = pygame.image.load(filename).convert()
+                self.alpha = False;
                 
             elif(conversion == "Alpha"):
                 self.sheet = pygame.image.load(filename).convert_alpha()
+                self.alpha = True;
 
         except pygame.error, message:
             print 'Unable to load spritesheet image:', filename
@@ -26,8 +28,13 @@ class Sprite_Sheet(object):
     def image_at(self, rectangle, colorkey = None):
         "Loads image from x,y,x+offset,y+offset"
         rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size).convert()
+        if(self.alpha == True):
+            image = pygame.Surface(rect.size).convert_alpha()
+        else:
+            image = pygame.Surface(rect.size).convert()
+
         image.blit(self.sheet, (0, 0), rect)
+
         if colorkey is not None:
             if colorkey is -1:
                 colorkey = image.get_at((0,0))
@@ -42,10 +49,8 @@ class Sprite_Sheet(object):
                               size,
                               size), colorkey)
         
-
-    #Load an image given a valid index
+    #Load an image given valid coords
     def image_by_coords(self, size, x, y, colorkey = None):
-
         self.image_by_index(self, size, x+y*self.sheet.get_width() / size, colorkey)
 
     # Load a whole bunch of images and return them as a list
