@@ -215,7 +215,7 @@ if __name__ == '__main__':
     gen = Ability(3,2).unit
     print gen.m_name
     print gen.output_attribs()
-    gen.m_level = 2
+    gen.m_level = 1
     print gen.output_attribs()
     #print gen[0].output_attribs()
     #pygame.image.save(gen[1],"Saved Games/0/Abilities/"+gen[0].m_name+".png")

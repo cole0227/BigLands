@@ -393,7 +393,7 @@ if __name__ == '__main__':
 
 
     #what's a suit of armour worth?
-    item_armour = random_armour_piece(100,0,0)
+    item_armour = random_armour_piece(100,1,0)
     print item_armour.output_attribs()
     source_unit_knight.append(item_armour)
 
