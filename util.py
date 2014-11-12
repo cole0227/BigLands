@@ -2,6 +2,7 @@ import random
 import sys
 import copy
 import os
+import pickle
 
 import pygame
 import pygame.time
@@ -261,16 +262,28 @@ def save_icon_double(u=-1,t=-1,ox=-1,oy=-1,name=None,ico=None,ico2=None,ico2_bac
     icon2backing = pygame.transform.scale(icon2backing,(160,160))
     under_texture.blit(icon2backing,(0,0))
 
-    if(name == None):
-        pygame.image.save(under_texture,str(u)+" "+str(t)+" "+str(ox)+" "+str(oy)+" "+str(ico)+".png")
-    else:
-        pygame.image.save(under_texture,name)
+    #if(name == None):
+        #pygame.image.save(under_texture,str(u)+" "+str(t)+" "+str(ox)+" "+str(oy)+" "+str(ico)+".png")
+    #else:
+        #pygame.image.save(under_texture,name)
 
 
     #Reset all our variables for the next iteration, and return some values
-    out = [globals.icon_list[ico],ox+6*oy,u,globals.icon_list[ico2]]
+    out = [globals.icon_list[ico], ox+6*oy, u, globals.icon_list[ico2], under_texture]
     u,t,ox,oy,name,ico,ico2,ico2_back=-1,-1,-1,-1,None,None,None,-1
     return out
+
+def write_file(file_name,data1):
+    f = open(file_name, 'wb')
+    pickle.dump(data1, f, -1)
+    f.close()
+
+def read_file(file_name):
+    f = open(file_name, 'rb')
+    data1 = pickle.load(f)
+    f.close()
+    return data1
+
 
 if __name__ == '__main__':
 

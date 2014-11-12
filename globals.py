@@ -69,3 +69,6 @@ prev = os.getcwd()
 os.chdir("Assets/Game-Icons")
 icon_list.extend(glob.glob("*.png"))
 os.chdir(prev)
+
+global time_hold_mouse_button
+time_hold_mouse_button = 0.2

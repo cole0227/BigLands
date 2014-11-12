@@ -66,31 +66,43 @@ class Player_Actor(Game_Actor):
         Game_Actor.__init__(self, posn, name, icon, width, unit)
 
         self.m_target = [posn[0],posn[1]]
+        self.m_leftHoldFrames = 0;
+        self.m_rightHoldFrames = 0;
 
 
     def input(self, event):
 
         Game_Actor.input(self,event)
 
-        if pygame.mouse.get_pressed()[0]: # left click
-
-            self.m_target = pygame.mouse.get_pos()
-
-        elif pygame.mouse.get_pressed()[2]: # right click
-
-            if(distance(self.m_pos,pygame.mouse.get_pos()) < self.m_unit.get("attack_range")):
-
-                other = globals.screens["Game"].object_at(pygame.mouse.get_pos(),self)
-
-                if(other != None and hasattr(other, "m_unit")):
-
-                    self.attack(other,1.0)
-
-            self.m_target = pygame.mouse.get_pos()            
-
     def update(self,delta):
 
         Game_Actor.update(self,delta)
+
+        if pygame.mouse.get_pressed()[0]: # left click
+
+            self.m_leftHoldFrames += 1
+        else:
+            if  self.m_leftHoldFrames > 0:
+                print "Left Tap",self.m_leftHoldFrames
+            self.m_leftHoldFrames = 0
+
+        if self.m_leftHoldFrames >= globals.time_hold_mouse_button*globals.frame_rate:
+                
+            print "Left Hold"
+            self.m_leftHoldFrames = 0
+
+        if pygame.mouse.get_pressed()[2]: # right click
+
+            self.m_rightHoldFrames += 1
+        else:
+            if self.m_rightHoldFrames > 0:
+                print "Right Tap",self.m_rightHoldFrames
+            self.m_rightHoldFrames = 0
+
+        if self.m_rightHoldFrames >= globals.time_hold_mouse_button*globals.frame_rate:
+
+            print "Right Hold"
+            self.m_rightHoldFrames = 0
 
         dx = self.m_target[0] - self.m_pos[0]
         dy = self.m_target[1] - self.m_pos[1]

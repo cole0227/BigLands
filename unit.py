@@ -41,7 +41,6 @@ class Attribute(object):
 
         return str(self.get());
 
-
 class Unit(object):
 
     def __init__(self, attribs, level=0):
@@ -53,7 +52,7 @@ class Unit(object):
             if(type(self.m_attribs[attrib]) is int):
                 self.m_attribs[attrib]=Attribute(self,self.m_attribs[attrib])
             elif(type(self.m_attribs[attrib]) is Attribute):
-                pass
+                self.m_attribs[attrib].m_owner = self
             else:
                 self.m_attribs[attrib]=Attribute(self,self.m_attribs[attrib][0],self.m_attribs[attrib][1])
 
@@ -96,10 +95,10 @@ class Unit(object):
 
         string = "Level: "+str(self.m_level)
         for key in self.m_attribs.keys():
-            string +="\n"+str(key)+": "+str(self.m_attribs[key])
+            if(str(self.m_attribs[key]) != "0"):
+                string +="\n"+str(key)+": "+str(self.m_attribs[key])+" (+"+str(int(self.m_attribs[key].m_growth*10)/10.0)+")"
 
         return string
-
 
     def __str__(self):
 
@@ -110,18 +109,18 @@ class Unit(object):
         string += "\t\tAttack: "+str(self.m_attribs["attack_damage"])+"/"+str(self.m_attribs["attack_speed"])+"%"
         string += "\t\tCrits: "+str(100+self.m_attribs["critical_damage"].get())+"/"+str(self.m_attribs["critical_chance"])+"%"
         string += "\t\tHeroic Stats{"
-        if("strength" in self.m_attribs):
-            string += "S:"+str(self.m_attribs["strength"])+" "
-        if("dexterity" in self.m_attribs):
-            string += "D:"+str(self.m_attribs["dexterity"])+" "
+        if("toughness" in self.m_attribs):
+            string += "T:"+str(self.m_attribs["toughness"])+" "
+        if("agility" in self.m_attribs):
+            string += "A:"+str(self.m_attribs["agility"])+" "
         if("constitution" in self.m_attribs):
             string += "C:"+str(self.m_attribs["constitution"])+" "
-        if("intelligence" in self.m_attribs):
-            string += "I:"+str(self.m_attribs["intelligence"])+" "
-        if("wisdom" in self.m_attribs):
-            string += "W:"+str(self.m_attribs["wisdom"])+" "
-        if("charisma" in self.m_attribs):
-            string += "H:"+str(self.m_attribs["charisma"])+" "
+        if("finesse" in self.m_attribs):
+            string += "F:"+str(self.m_attribs["finesse"])+" "
+        if("might" in self.m_attribs):
+            string += "M:"+str(self.m_attribs["might"])+" "
+        if("precision" in self.m_attribs):
+            string += "P:"+str(self.m_attribs["precision"])+" "
         string += "}"
 
         return string
@@ -141,12 +140,13 @@ class Unit(object):
 
 class Actor_Unit(Unit):
 
-    def __init__(self, attribs, level=0):
+    def __init__(self, attribs, level=0, name="Monster"):
 
         Unit.__init__(self, attribs, level)
 
         self.m_bonus = []
         self.m_current_health = self.get("health")
+        self.m_name=name
 
     def append(self, unit):
 
@@ -160,7 +160,9 @@ class Actor_Unit(Unit):
 
     def recalc_bonus(self):
 
-        oldHP = self.m_current_health/float(self.get("health"))
+        oldHP = 0
+        if(int(self.get("health")) != 0):
+            oldHP = self.m_current_health/float(self.get("health"))
 
         for attrib in self.m_attribs.keys():
 
@@ -170,41 +172,46 @@ class Actor_Unit(Unit):
 
                 self.m_attribs[attrib].add(bonus.get(attrib))
 
-        if "strength" in self.m_attribs:
+        if "toughness" in self.m_attribs:
 
-            self.m_attribs["health"].add(self.get("strength")*4)
-            self.m_attribs["armour"].add(self.get("strength")*0.1)
+            self.m_attribs["health"].add(self.get("toughness")*4)
+            self.m_attribs["armour"].add(self.get("toughness")*0.1)
 
-        if "dexterity" in self.m_attribs:
+        if "agility" in self.m_attribs:
 
-            self.m_attribs["attack_speed"].add(self.get("dexterity")*0.8)
-            self.m_attribs["movement_speed"].add(self.get("dexterity"))
+            self.m_attribs["attack_speed"].add(self.get("agility")*0.8)
+            self.m_attribs["movement_speed"].add(self.get("agility"))
 
         if "constitution" in self.m_attribs:
 
             self.m_attribs["health"].add(self.get("constitution")*9)
             self.m_attribs["health_regeneration"].add(self.get("constitution")*0.05)
 
-        if "intelligence" in self.m_attribs:
+        if "finesse" in self.m_attribs:
 
-            self.m_attribs["attack_speed"].add(self.get("intelligence")*0.4)
-            self.m_attribs["dodge_chance"].add(self.get("intelligence")*0.3)
+            self.m_attribs["attack_speed"].add(self.get("finesse")*0.4)
+            self.m_attribs["dodge_chance"].add(self.get("finesse")*0.3)
 
-        if "wisdom" in self.m_attribs:
+        if "might" in self.m_attribs:
 
-            self.m_attribs["attack_damage"].add(0.5*self.get("wisdom"))
-            self.m_attribs["health_regeneration"].add(self.get("wisdom")*0.02)
+            self.m_attribs["attack_damage"].add(0.5*self.get("might"))
+            self.m_attribs["health_regeneration"].add(self.get("might")*0.02)
 
-        if "charisma" in self.m_attribs:
+        if "precision" in self.m_attribs:
 
-            self.m_attribs["critical_chance"].add(self.get("charisma")*0.5)
-            self.m_attribs["critical_damage"].add(self.get("charisma")*0.4)
+            self.m_attribs["critical_chance"].add(self.get("precision")*0.5)
+            self.m_attribs["critical_damage"].add(self.get("precision")*0.4)
 
-        self.m_current_health = float(self.get("health"))*float(oldHP)
+        if(oldHP != 0):
+            self.m_current_health = float(self.get("health"))*float(oldHP)
+        else:
+            self.m_current_health = float(self.get("health"))
 
     def merge(self,unit):
 
-        oldHP = self.m_current_health/float(self.get("health"))
+        oldHP = 0
+        if(int(self.get("health")) != 0):
+            oldHP = self.m_current_health/float(self.get("health"))
 
         for attrib in unit.m_attribs.keys():
             if attrib in self.m_attribs:
@@ -212,17 +219,26 @@ class Actor_Unit(Unit):
             else:
                 self.m_attribs[attrib]=unit.m_attribs[attrib]
                 self.m_attribs[attrib].m_owner=self
+            #print "Merge Attrib:"+attrib
 
-        self.m_current_health = float(self.get("health"))*float(oldHP)
+        if(oldHP != 0):
+            self.m_current_health = float(self.get("health"))*float(oldHP)
+        else:
+            self.m_current_health = float(self.get("health"))
 
     def level_up(self,level=1):
 
-        oldHP = self.m_current_health/float(self.get("health"))
+        oldHP = 0
+        if(int(self.get("health")) != 0):
+            oldHP = self.m_current_health/float(self.get("health"))
 
         self.m_level += level
         self.recalc_bonus()
 
-        self.m_current_health = float(self.get("health"))*float(oldHP)
+        if(oldHP != 0):
+            self.m_current_health = float(self.get("health"))*float(oldHP)
+        else:
+            self.m_current_health = float(self.get("health"))
 
     def attack_ignore_armour(self, target_unit, mult=1.0):
 
@@ -269,7 +285,7 @@ def random_bonus(mini,maxi,count):
     for i in range(0,count):
 
         #this list contains all the heroic stats 3 times
-        stat = random.choice(("health","health_regeneration","armour","attack_speed","attack_damage","movement_speed","critical_chance","critical_damage","dodge_chance","strength","dexterity","constitution","intelligence","wisdom","charisma","strength","dexterity","constitution","intelligence","wisdom","charisma","strength","dexterity","constitution","intelligence","wisdom","charisma"))
+        stat = random.choice(("health","health_regeneration","armour","attack_speed","attack_damage","movement_speed","critical_chance","critical_damage","dodge_chance","toughness","agility","constitution","finesse","might","precision","toughness","agility","constitution","finesse","might","precision","toughness","agility","constitution","finesse","might","precision"))
 
         if(stat == "health"):
             u.merge(Unit({stat:(random.randint(mini*3,maxi*3),0)}))
@@ -301,7 +317,7 @@ def random_bonus_combat(mini,maxi,count):
 def random_bonus_heroic(mini,maxi,count):
     u = Unit({})
     for i in range(0,count):
-        u.merge(Unit({random.choice(("strength","dexterity","constitution","intelligence","wisdom","charisma")):(random.randint(mini,maxi),0)}))
+        u.merge(Unit({random.choice(("toughness","agility","constitution","finesse","might","precision")):(random.randint(mini,maxi),0)}))
     return u
 
 def random_armour_piece(armour,bonus_count=0,level=0,mini=20,maxi=30):
@@ -316,6 +332,7 @@ def random_armour_piece(armour,bonus_count=0,level=0,mini=20,maxi=30):
 
 if __name__ == '__main__':
 
+    blank                    = Actor_Unit({"health":0,  "health_regeneration":0, "armour":0,  "attack_speed":0, "attack_damage":0, "movement_speed":0, "critical_chance":0, "critical_damage":0, "dodge_chance":0})
     source_unit_nme          = Actor_Unit({"health":(80,1),  "health_regeneration":(1,0.05), "armour":(8,0.1),  "attack_speed":100, "attack_damage":(40,1), "movement_speed":100, "critical_chance":0, "critical_damage":0, "dodge_chance":0})
     source_unit_knight       = Actor_Unit({"health":(115,1), "health_regeneration":(1,0.05), "armour":(20,0.1), "attack_speed":70,  "attack_damage":(40,1), "movement_speed":80 , "critical_chance":0, "critical_damage":0, "dodge_chance":0})
     source_unit_warden       = Actor_Unit({"health":(100,1), "health_regeneration":(1,0.05), "armour":(12,0.1), "attack_speed":90,  "attack_damage":(40,1), "movement_speed":100, "critical_chance":0, "critical_damage":0, "dodge_chance":0})
@@ -327,36 +344,53 @@ if __name__ == '__main__':
     source_unit_scout        = Actor_Unit({"health":(100,1), "health_regeneration":(1,0.05), "armour":(4,0.1),  "attack_speed":115, "attack_damage":(47,1), "movement_speed":130, "critical_chance":0, "critical_damage":0, "dodge_chance":0})
     #source_unit_scout.append(Unit({"armour":8}))
 
-    source_class_shepherd   = Unit({"strength":(1,1.0), "dexterity":(1,1.0), "constitution":(1,1.0), "intelligence":(1,1.0), "wisdom":(3,1.8), "charisma":(3,1.8)})
-    source_class_brigand    = Unit({"strength":(3,2.2), "dexterity":(1,1.0), "constitution":(3,2.2), "intelligence":(1,1.0), "wisdom":(1,1.0), "charisma":(1,1.0)})
-    source_class_moonbrain  = Unit({"strength":(1,1.2), "dexterity":(1,1.4), "constitution":(1,1.2), "intelligence":(3,1.7), "wisdom":(3,1.7), "charisma":(1,1.2)})
-    source_class_veteran    = Unit({"strength":(1,1.0), "dexterity":(1,1.0), "constitution":(3,1.8), "intelligence":(1,1.0), "wisdom":(1,1.0), "charisma":(3,1.8)})
-    source_class_monk_river = Unit({"strength":(1,1.0), "dexterity":(3,1.7), "constitution":(1,1.2), "intelligence":(3,1.7), "wisdom":(1,1.0), "charisma":(1,1.0)})
-    source_class_monk_wind  = Unit({"strength":(1,0.9), "dexterity":(3,1.8), "constitution":(1,1.3), "intelligence":(1,0.9), "wisdom":(3,1.8), "charisma":(1,0.9)})
-    source_class_monk_leaf  = Unit({"strength":(1,1.0), "dexterity":(3,1.8), "constitution":(3,2.2), "intelligence":(1,1.0), "wisdom":(1,1.0), "charisma":(1,1.0)})
-    source_class_settler    = Unit({"strength":(1,1.0), "dexterity":(1,1.0), "constitution":(3,1.8), "intelligence":(1,1.0), "wisdom":(3,1.8), "charisma":(1,1.0)})
-    source_class_reaver     = Unit({"strength":(3,1.8), "dexterity":(3,1.8), "constitution":(1,1.0), "intelligence":(1,1.0), "wisdom":(1,1.0), "charisma":(1,1.0)})
-    source_class_agent      = Unit({"strength":(1,0.9), "dexterity":(1,0.9), "constitution":(1,0.9), "intelligence":(5,2.9), "wisdom":(1,0.9), "charisma":(1,0.9)})
-    source_class_ambassador = Unit({"strength":(1,0.9), "dexterity":(1,0.9), "constitution":(1,0.9), "intelligence":(1,0.9), "wisdom":(1,0.9), "charisma":(5,2.9)})
+    source_class_shepherd   = Unit({"toughness":(1,1.0), "agility":(1,1.0), "constitution":(1,1.0), "finesse":(1,1.0), "might":(3,1.8), "precision":(3,1.8)})
+    source_class_brigand    = Unit({"toughness":(3,2.2), "agility":(1,1.0), "constitution":(3,2.2), "finesse":(1,1.0), "might":(1,1.0), "precision":(1,1.0)})
+    source_class_moonbrain  = Unit({"toughness":(1,1.2), "agility":(1,1.4), "constitution":(1,1.2), "finesse":(3,1.7), "might":(3,1.7), "precision":(1,1.2)})
+    source_class_veteran    = Unit({"toughness":(1,1.0), "agility":(1,1.0), "constitution":(3,1.8), "finesse":(1,1.0), "might":(1,1.0), "precision":(3,1.8)})
+    source_class_monk_river = Unit({"toughness":(1,1.0), "agility":(3,1.7), "constitution":(1,1.2), "finesse":(3,1.7), "might":(1,1.0), "precision":(1,1.0)})
+    source_class_monk_wind  = Unit({"toughness":(1,0.9), "agility":(3,1.8), "constitution":(1,1.3), "finesse":(1,0.9), "might":(3,1.8), "precision":(1,0.9)})
+    source_class_monk_leaf  = Unit({"toughness":(1,1.0), "agility":(3,1.8), "constitution":(3,2.2), "finesse":(1,1.0), "might":(1,1.0), "precision":(1,1.0)})
+    source_class_settler    = Unit({"toughness":(1,1.0), "agility":(1,1.0), "constitution":(3,1.8), "finesse":(1,1.0), "might":(3,1.8), "precision":(1,1.0)})
+    source_class_reaver     = Unit({"toughness":(3,1.8), "agility":(3,1.8), "constitution":(1,1.0), "finesse":(1,1.0), "might":(1,1.0), "precision":(1,1.0)})
+    source_class_agent      = Unit({"toughness":(1,0.9), "agility":(1,0.9), "constitution":(1,0.9), "finesse":(5,2.9), "might":(1,0.9), "precision":(1,0.9)})
+    source_class_ambassador = Unit({"toughness":(1,0.9), "agility":(1,0.9), "constitution":(1,0.9), "finesse":(1,0.9), "might":(1,0.9), "precision":(5,2.9)})
 
-    monster_race_beast = Unit({"strength":(5,3.3), "dexterity":(3,1.5), "constitution":(5,2.9), "critical_chance":20, "critical_damage":50})
-    monster_race_cultist = Unit({"strength":(1,1.1), "dexterity":(0,0.4), "constitution":(1,1.2), "intelligence":(3,1.4), "wisdom":(2,1.4), "charisma":(9,3.0)})
-    monster_race_demon = Unit({"strength":(3,1.7), "dexterity":(0,0.4), "constitution":(3,1.8), "intelligence":(3,2.1), "wisdom":(8,2.0), "charisma":(9,3.0)})
-    monster_race_giant = Unit({"strength":(9,2.8), "dexterity":(1,1.0), "constitution":(7,1.9), "intelligence":(6,0.4), "wisdom":(1,0.8), "charisma":(1,0.4), "attack_damage":30, "attack_speed":-30,})
+    monster_race_beast = Unit({"toughness":(5,3.3), "agility":(3,1.5), "constitution":(5,2.9), "critical_chance":20, "critical_damage":50})
+    monster_race_cultist = Unit({"toughness":(1,1.1), "agility":(0,0.4), "constitution":(1,1.2), "finesse":(3,1.4), "might":(2,1.4), "precision":(9,3.0)})
+    monster_race_demon = Unit({"toughness":(3,1.7), "agility":(0,0.4), "constitution":(3,1.8), "finesse":(3,2.1), "might":(8,2.0), "precision":(9,3.0)})
+    monster_race_giant = Unit({"toughness":(9,2.8), "agility":(1,1.0), "constitution":(7,1.9), "finesse":(6,0.4), "might":(1,0.8), "precision":(1,0.4), "attack_damage":30, "attack_speed":-30,})
     monster_race_frost_giant = Unit({"armour":15, "health":50}).merge(monster_race_giant)
     monster_race_fire_giant = Unit({"attack_damage":15, "health":80}).merge(monster_race_giant)
-    monster_race_golem = Unit({"strength":(1,1.8), "constitution":(3,1.8), "wisdom":(3,1.8)})
-    monster_race_lizard = Unit({"strength":(1,0.7), "dexterity":(4,2.4), "constitution":(1,0.8), "intelligence":(3,2.1), "wisdom":(7,2.6), "dodge_chance":15})
+    monster_race_golem = Unit({"toughness":(1,1.8), "constitution":(3,1.8), "might":(3,1.8)})
+    monster_race_lizard = Unit({"toughness":(1,0.7), "agility":(4,2.4), "constitution":(1,0.8), "finesse":(3,2.1), "might":(7,2.6), "dodge_chance":15})
     monster_race_lizard_dragon = Unit({"dodge_chance":(5,0.34)}).merge(monster_race_lizard)
-    monster_race_undead = Unit({"strength":(13,1.9), "dexterity":(1,1.0), "constitution":(2,1.5), "intelligence":(1,1.0)})
-    monster_race_ghost = Unit({"intelligence":(4,2.5)}).merge(monster_race_undead)
-    monster_race_zombie = Unit({"strength":(4,2.5),"constitution":(14,4.0)}).merge(monster_race_undead)
-    monster_race_skeleton = Unit({"dexterity":(2,2.0),"armour":20}).merge(monster_race_undead)    
+    monster_race_undead = Unit({"toughness":(13,1.9), "agility":(1,1.0), "constitution":(2,1.5), "finesse":(1,1.0)})
+    monster_race_ghost = Unit({"finesse":(4,2.5)}).merge(monster_race_undead)
+    monster_race_zombie = Unit({"toughness":(4,2.5),"constitution":(14,4.0)}).merge(monster_race_undead)
+    monster_race_skeleton = Unit({"agility":(2,2.0),"armour":20}).merge(monster_race_undead)    
 
     source_unit_knight.merge(source_class_monk_river)
     source_unit_warlock.merge(source_class_brigand)
     source_unit_nme.merge(source_class_settler)
     source_unit_scout.merge(source_class_moonbrain)
+
+    #print source_unit_ranger
+    #source_unit_ranger.merge(source_class_brigand)
+    #source_unit_ranger.merge(monster_race_demon)
+    #source_unit_ranger.merge(monster_race_lizard)
+    #source_unit_ranger.merge(monster_race_undead)
+    #source_unit_ranger.recalc_bonus()
+    #print source_unit_ranger
+    #source_unit_ranger.level_up()
+    #source_unit_ranger.recalc_bonus()
+    #print source_unit_ranger
+    #source_unit_ranger.level_up(98)
+    #source_unit_ranger.recalc_bonus()
+    #print source_unit_ranger
+    #print source_unit_ranger.output_attribs()
+    #print
+
 
     #what's a suit of armour worth?
     item_armour = random_armour_piece(100,0,0)
@@ -372,6 +406,7 @@ if __name__ == '__main__':
     source_unit_scout.recalc_bonus()
     source_unit_knight.recalc_bonus()
     source_unit_warlock.recalc_bonus()
+    source_unit_ranger.recalc_bonus()
 
 
     print

@@ -196,6 +196,6 @@ class WeightedCaveFactory(CA_CaveFactory):
 
 
 if __name__ == "__main__":
-    caf = WeightedCaveFactory(40,70,0.41)
+    caf = WeightedCaveFactory(60,100,0.41)
     profile.run("caf.gen_map()")
     caf.print_grid()

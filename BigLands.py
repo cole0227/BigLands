@@ -61,7 +61,7 @@ def main_init():
     random.seed()
 
     #set up the window
-    globals.screen_resolution = (1300,600)
+    globals.screen_resolution = (600,400)
     globals.window_surface = pygame.display.set_mode((globals.screen_resolution[0],globals.screen_resolution[1]), 0, 32) 
     pygame.display.set_caption(globals.game_name)
     message("")
@@ -162,9 +162,9 @@ def main_game_loop():
         util =+ clock.get_rawtime()/1000.0
         if (last<time.clock()-5):
             print "Utilization:",float(int(10000.0/(time.clock()-last)*util))/100,"%"
-            util = 0
             last = time.clock()
-
+            util = 0
+            
 
 if __name__ == '__main__':
 
