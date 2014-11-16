@@ -157,9 +157,9 @@ def matrix_redist(amatrix, vals):
 #
 # Basic value clamping
 #
-def clamp(l,m,g):
+def clamp(v,l,u):
     
-    return max(l,min(g,m))
+    return min(u,max(v,l))
 
 #
 # Basic Distance Calculation

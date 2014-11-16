@@ -3,6 +3,8 @@ import random
 import copy
 import time
 import os
+import cProfile
+import re
 from multiprocessing import Process, Queue
 
 import pygame
@@ -41,6 +43,7 @@ def main_init():
         p.start()
 
     def make_map_small():
+        #cProfile.run('generate_map(128)')
         make_map(128)
 
     def make_map_medium():

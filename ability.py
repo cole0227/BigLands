@@ -32,6 +32,7 @@ class Ability_Unit_Builder(object):
         self.m_unit = Unit(starting_attribs,level)
 
         self.m_count_attribs_limit = count_attribs_limit
+
         if(stat_limits == -1):
             self.m_stat_limits=[1.5,3.0,1.5,2.0]
         else:
@@ -93,6 +94,8 @@ class Ability_Unit_Builder(object):
         self.add("y","armour",0.3,minimum=2)
         self.add("z","armour",0.5)
         self.add("z","armour",0.3,minimum=2)
+
+
 
         if(self.m_count_attribs_limit < len(self.m_unit.m_attribs.keys())):
             #selecting N from the highlighted attributes
@@ -181,7 +184,15 @@ class Ability (object):
 
         #print ico_vals[0]
         if(power_count >= 2):
-            i = Ability_Unit_Builder(Effect[eff],0,2,stat_limits=[3,5,2.0,2.5]).gen()
+            special_power = random.sample((("lifesteal",[5,1]),
+                                           ("overpower",[5,1]),
+                                           ("sleep_5_second",[2.5,0.5]),
+                                           ("sleep_2_second",[5,1]),
+                                           ("slow_20_percent_5_second",[10,2])
+                                           ),1)
+            special_power = {special_power[0][0]:special_power[0][1]}
+            print special_power
+            i = Ability_Unit_Builder(Effect[eff],0,2,stat_limits=[3,5,2.0,2.5],starting_attribs=special_power).gen()
             b = blank.copy()
             b.merge(i.get())
             #print i.get().output_attribs()

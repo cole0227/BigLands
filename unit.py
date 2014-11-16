@@ -290,9 +290,9 @@ def random_bonus(mini,maxi,count):
         if(stat == "health"):
             u.merge(Unit({stat:(random.randint(mini*3,maxi*3),0)}))
         elif(stat == "health_regeneration"):
-            u.merge(Unit({stat:(random.randint(mini/20.0,maxi/20.0),0)}))
+            u.merge(Unit({stat:(random.randint(mini/20,maxi/20),0)}))
         elif("chance" in stat):
-            u.merge(Unit({stat:(random.randint(mini/5.0,maxi/5.0),0)}))
+            u.merge(Unit({stat:(random.randint(mini/5,maxi/5),0)}))
         else:
             u.merge(Unit({stat:(random.randint(mini,maxi),0)}))
     return u
@@ -395,7 +395,7 @@ if __name__ == '__main__':
     #what's a suit of armour worth?
     item_armour = random_armour_piece(100,1,0)
     print item_armour.output_attribs()
-    source_unit_knight.append(item_armour)
+    #source_unit_knight.append(item_armour)
 
     # add the fatty to see very long battles
     #unit_fatty = Unit({"health":10000})

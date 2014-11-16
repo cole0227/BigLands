@@ -19,9 +19,9 @@ class Game(Screen):
         Screen.__init__(self, name)
         self.m_game_objects = []
         self.add_object(Game_Object([100,100]))
-        self.add_object(Player_Actor([random.randint(0,300),random.randint(0,300)],"Dude1",pygame.image.load(random_icon()),random.randint(30,70),Actor_Unit({"health":(80,1),  "armour":(12,0.4),  "attack_speed":100, "attack_range":100, "attack_damage":(40,1), "movement_speed":100})))
-        self.add_object(  Game_Actor([random.randint(0,300),random.randint(0,300)],"Dude2",pygame.image.load(random_icon()),random.randint(30,70),Actor_Unit({"health":(80,1),  "armour":( 8,0.4),  "attack_speed":100, "attack_range":100, "attack_damage":(40,1), "movement_speed":100})))
-        self.add_object(  Game_Actor([random.randint(0,300),random.randint(0,300)],"Dude3",pygame.image.load(random_icon()),random.randint(30,70),Actor_Unit({"health":(80,1),  "armour":( 8,0.4),  "attack_speed":100, "attack_range":100, "attack_damage":(40,1), "movement_speed":100})))
+        self.add_object(Player_Actor([random.randint(0,300),random.randint(0,300)],"Dude1",pygame.image.load(random_icon()),random.randint(30,70),Actor_Unit({"health":(80,1),  "armour":(12,0.4),  "attack_speed":100, "attack_range":35, "attack_damage":(40,1), "movement_speed":100})))
+        self.add_object(  Game_Actor([random.randint(0,300),random.randint(0,300)],"Dude2",pygame.image.load(random_icon()),random.randint(30,70),Actor_Unit({"health":(80,1),  "armour":( 8,0.4),  "attack_speed":100, "attack_range":35, "attack_damage":(40,1), "movement_speed":100})))
+        self.add_object(  Game_Actor([random.randint(0,300),random.randint(0,300)],"Dude3",pygame.image.load(random_icon()),random.randint(30,70),Actor_Unit({"health":(80,1),  "armour":( 8,0.4),  "attack_speed":100, "attack_range":35, "attack_damage":(40,1), "movement_speed":100})))
 
 
     def add_object(self, game_object):
@@ -68,8 +68,7 @@ class Game(Screen):
             
             rect = obj.get_rect()
 
-            if(obj != source, posn[0] > rect[0] and posn[0] < rect[0]+rect[2] and posn[1] > rect[1] and posn[1] < rect[1]+rect[3]):
-
+            if(obj != source and posn[0] > rect[0] and posn[0] < rect[0]+rect[2] and posn[1] > rect[1] and posn[1] < rect[1]+rect[3]):
                 return obj
 
         return None

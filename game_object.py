@@ -35,7 +35,7 @@ class Game_Object(object):
 
     def get_rect(self):
 
-        return( (self.m_pos[0]-self.m_width/2,self.m_pos[1]-self.m_width/2,self.m_width/2,self.m_width/2) )
+        return( (self.m_pos[0]-self.m_width/2.0,self.m_pos[1]-self.m_width/2.0,self.m_width,self.m_width) )
 
     def to_dict(self):
         
@@ -43,9 +43,14 @@ class Game_Object(object):
 
     def collide(self, gameObj):
 
-        return (((self.m_pos[0] - gameObj.m_pos[0]) ** 2 +
-                 (self.m_pos[1] - gameObj.m_pos[1]) ** 2) ** (0.5) <
-                 (gameObj.m_width + self.m_width)/2)
+        distance = ((self.m_pos[0] - gameObj.m_pos[0]) ** 2 +
+                   (self.m_pos[1] - gameObj.m_pos[1]) ** 2) ** (0.5)
+        overlap = (gameObj.m_width + self.m_width)/2 - distance
+        if (overlap >= 1 and self.m_pos[0] - gameObj.m_pos[0] != 0 and self.m_pos[1] - gameObj.m_pos[1] != 0 ):
+            self.m_pos[0] += overlap * (self.m_pos[0] - gameObj.m_pos[0]) / abs(self.m_pos[0] - gameObj.m_pos[0])
+            self.m_pos[1] += overlap * (self.m_pos[1] - gameObj.m_pos[1]) / abs(self.m_pos[1] - gameObj.m_pos[1])
+            #gameObj.m_pos[0] -= overlap * (self.m_pos[0] - gameObj.m_pos[0]) / abs(self.m_pos[0] - gameObj.m_pos[0])
+            #gameObj.m_pos[1] -= overlap * (self.m_pos[1] - gameObj.m_pos[1]) / abs(self.m_pos[1] - gameObj.m_pos[1])
 
     def move(self, delta):
 
@@ -73,3 +78,10 @@ class Bullet_Object(Game_Object):
     def __init__(self,pos,name="An Object", icon=None, width = 20, source=None, damage=(1.0), ):
 
         Game_Object.__init__(self,pos,name,icon,width)
+
+
+if __name__ == '__main__':
+
+    import BigLands
+    BigLands.main_init()
+    BigLands.main_game_loop()
