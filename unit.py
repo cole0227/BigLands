@@ -20,8 +20,7 @@ class Attribute(object):
         self.m_bonus = int(bonus);
 
     def get(self):
-
-        return int(self.m_base+self.m_bonus+self.m_growth*self.m_owner.m_level);
+        return int(self.m_base+self.m_bonus+self.m_growth*self.m_owner.m_level)
 
     def merge(self,attrib):
 
@@ -91,6 +90,13 @@ class Unit(object):
 
         return otr
 
+    def random_attrib(self):
+        temp_list = []
+        for key in self.m_attribs.keys():
+            if(str(self.m_attribs[key]) != "0"):
+                temp_list.append(key)
+        return random.choice(temp_list)
+
     def output_attribs(self):
 
         string = "Level: "+str(self.m_level)
@@ -157,6 +163,14 @@ class Actor_Unit(Unit):
 
         self.m_bonus = []
         self.recalc_bonus()
+
+    def clear_bonus(self):
+
+        self.m_bonus = []
+        
+        for attrib in self.m_attribs.keys():
+
+            self.m_attribs[attrib].reset()
 
     def recalc_bonus(self):
 
