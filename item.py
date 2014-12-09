@@ -76,6 +76,7 @@ def make_item(bonus_count = 4, level = 0):
 	icon.blit(globals.icons_items_outlines,(-1,-1),(60*(3-bonus_count/2),0,60,60))
 	pygame.image.save(icon,"Saved Games/0/Items/"+name+".png")
 	write_file("Saved Games/0/Items/"+name+".pkl",item_unit)
+	return name,item_unit,icon
 
 
 pygame.init()
