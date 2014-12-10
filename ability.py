@@ -294,8 +294,8 @@ class Ability (object):
         blank = Actor_Unit({"health":0,  "health_regeneration":0, "armour":0,  "attack_speed":0, "attack_damage":0, "movement_speed":0, "critical_chance":0, "critical_damage":0, "dodge_chance":0},name=self.name)
 
         if(power_count >= 4):
-            special_power = random.sample((("lifesteal",[5,1]),
-                                           ("overpower",[5,1])#,
+            special_power = random.sample((("lifesteal",[random.randint(3,6),1]),
+                                           ("overpower",[random.randint(3,6),1])#,
                                            #("sleep_5_second",[2.5,0.5]),
                                            #("sleep_2_second",[5,1]),
                                            #("slow_20_percent_5_second",[10,2])
@@ -310,9 +310,9 @@ class Ability (object):
             blank.merge(u.get())
             blank.merge(b)
         elif(power_count < 0):
-            blank.merge(Ability_Unit_Builder(Effect[self.eff],0,-power_count,stat_limits=[-2,-4,-1.5,-2.0]).gen().get())
+            blank.merge(Ability_Unit_Builder(Effect[self.eff],0,-power_count,stat_limits=[-2,-4,-1.5,-2.0],force_power=self.force_power).gen().get())
         else:
-            blank.merge(Ability_Unit_Builder(Effect[self.eff],0,power_count,stat_limits=[3,5,2.0,2.5]).gen().get())
+            blank.merge(Ability_Unit_Builder(Effect[self.eff],0,power_count,stat_limits=[3,5,2.0,2.5],force_power=self.force_power).gen().get())
 
         return blank
 
