@@ -144,6 +144,14 @@ class Unit(object):
 
         self.m_level += level
 
+    def attrib_count(self, minimum=0):
+
+        c = 0
+        for a in self.m_attribs.values():
+            if(a.get() > minimum):
+                c += 1
+        return c
+
 class Actor_Unit(Unit):
 
     def __init__(self, attribs, level=0, name="Monster"):

@@ -70,21 +70,38 @@ Effect_Attrib = {"Tough":"health",
         "Gooey":"movement_speed",
         "Slimey":"movement_speed",
         "Lesser":"agility",
-        "Greater":"might",
+        "Greater":"toughness",
         "Giant":"constitution",
         "Tiny":"agility",
-        "Oozing":"health",
+        "Oozing":"toughness",
         "Spikey":"health",
-        "Cosmic":"health",
+        "Cosmic":"precision",
         "Melting":"agility",
-        "Smelly":"agility",
-        "Stinky":"agility",
+        "Smelly":"might",
+        "Stinky":"might",
         "Crusty":"finesse"}
+
+attribute_multiplier = {"health": 8,
+                        "health_regeneration": 0.4,
+                        "armour": 0.3,
+                        "attack_speed": 3,
+                        "attack_damage": 3,
+                        "movement_speed": 0.6,
+                        "critical_chance": 0.4,
+                        "critical_damage": 2,
+                        "dodge_chance": 0.4,
+                        "finesse": 0.4,
+                        "agility": 0.4,
+                        "precision": 0.4,
+                        "constitution": 0.4,
+                        "toughness": 0.4,
+                        "might": 0.4}
 
 class Ability_Unit_Builder(object):
 
-    def __init__(self,name,level, count_attribs_limit=3, stat_limits=-1, starting_attribs={}):
+    def __init__(self,name,level, count_attribs_limit=3, stat_limits=-1, starting_attribs={},force_power=None):
 
+        self.force_power = force_power
         self.m_name = name
         self.m_level = level
         self.m_unit = Unit(starting_attribs,level)
@@ -97,7 +114,8 @@ class Ability_Unit_Builder(object):
             self.m_stat_limits=stat_limits
 
     def add(self,string,attrib_name,attrib_mult=1.0, minimum=1):
-
+        
+        attrib_mult = attribute_multiplier[attrib_name]
         name = self.m_name.lower()
         instances = name.count(string)
 
@@ -179,6 +197,14 @@ class Ability_Unit_Builder(object):
                 if not(key in keys):
                     del self.m_unit.m_attribs[key]
 
+        if(self.force_power != None):
+            #delete a random power
+            del self.m_unit.m_attribs[random.choice(self.m_unit.m_attribs.keys())]
+            #then add our new one
+            print 
+            self.add("",self.force_power)
+
+
 
         return self
 
@@ -198,7 +224,9 @@ class Ability_Unit_Builder(object):
 #
 class Ability (object):
     
-    def __init__(self,power_count=3,downside_count=0,name=None):
+    def __init__(self,power_count=3,downside_count=0,name=None,force_power=None):
+
+            self.force_power = force_power
             if(name == None):
                 self.name = self.gen_name()
             else:
@@ -274,7 +302,7 @@ class Ability (object):
                                            ),1)
             special_power = {special_power[0][0]:special_power[0][1]}
             #print special_power
-            i = Ability_Unit_Builder(Effect[self.eff],0,2,stat_limits=[3,5,2.0,2.5],starting_attribs=special_power).gen()
+            i = Ability_Unit_Builder(Effect[self.eff],0,2,stat_limits=[3,5,2.0,2.5],starting_attribs=special_power,force_power=self.force_power).gen()
             b = blank.copy()
             b.merge(i.get())
             #print i.get().output_attribs()
