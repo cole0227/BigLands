@@ -113,7 +113,7 @@ class Ability_Unit_Builder(object):
         else:
             self.m_stat_limits=stat_limits
 
-    def add(self,string,attrib_name,attrib_mult=1.0, minimum=1):
+    def add(self,string,attrib_name, minimum=1):
         
         attrib_mult = attribute_multiplier[attrib_name]
         name = self.m_name.lower()
@@ -129,16 +129,16 @@ class Ability_Unit_Builder(object):
 
     def gen(self):
         
-        self.add("ring", "health_regeneration", 0.5)
-        self.add("armour", "armour", 0.5)
-        self.add("sword", "attack_damage", 4)
-        self.add("knife", "attack_speed", 3)
-        self.add("wand", "critical_chance", 0.4)
-        self.add("sling", "critical_damage", 2)
-        self.add("boots", "movement_speed", 0.6)
-        self.add("gem", "health", 20)
-        self.add("book", "finesse", 0.5)
-        self.add("book", "precision", 0.5)
+        self.add("ring", "health_regeneration")
+        self.add("armour", "armour")
+        self.add("sword", "attack_damage")
+        self.add("knife", "attack_speed")
+        self.add("wand", "critical_chance")
+        self.add("sling", "critical_damage")
+        self.add("boots", "movement_speed")
+        self.add("gem", "health")
+        self.add("book", "finesse")
+        self.add("book", "precision")
         self.add("totem", "constitution")
         self.add("sigil", "might")
         self.add("sigIl", "toughness")
@@ -147,48 +147,48 @@ class Ability_Unit_Builder(object):
         self.add("sigiL", "precision")
 
         self.add("a","precision")
-        self.add("a","precision",0.3,minimum=2)
+        self.add("a","precision",minimum=2)
         self.add("b","constitution")
-        self.add("b","constitution",0.3,minimum=2)
+        self.add("b","constitution",minimum=2)
         self.add("e","might")
-        self.add("e","might",0.3,minimum=3)
+        self.add("e","might",minimum=3)
         self.add("n","finesse")
-        self.add("n","finesse",0.3,minimum=3)
+        self.add("n","finesse",minimum=3)
         self.add("s","agility")
-        self.add("s","agility",0.3,minimum=3)
+        self.add("s","agility",minimum=3)
         self.add("t","toughness")
-        self.add("t","toughness",0.3,minimum=3)
+        self.add("t","toughness",minimum=3)
 
-        self.add("p","attack_damage",4)
-        self.add("g","attack_damage",4)
-        self.add("j","attack_damage",4)
-        self.add("o","attack_speed",3)
+        self.add("p","attack_damage")
+        self.add("g","attack_damage")
+        self.add("j","attack_damage")
+        self.add("o","attack_speed")
 
-        self.add("k","movement_speed",0.6)
-        self.add("c","movement_speed",0.6)
+        self.add("k","movement_speed")
+        self.add("c","movement_speed")
 
-        self.add("l","critical_chance",0.4)
-        self.add("u","critical_damage",2)
-        self.add("r","critical_damage",2)
-        self.add("f","critical_damage",2)
+        self.add("l","critical_chance")
+        self.add("u","critical_damage")
+        self.add("r","critical_damage")
+        self.add("f","critical_damage")
 
-        self.add("i","dodge_chance",0.4)
+        self.add("i","dodge_chance")
 
-        self.add("h","health",20)
-        self.add("h","health",15,minimum=2)
-        self.add("q","health",20)
-        self.add("q","health",15,minimum=2)
-        self.add("v","health_regeneration",0.4)
-        self.add("w","health_regeneration",0.4)
+        self.add("h","health")
+        self.add("h","health",minimum=2)
+        self.add("q","health")
+        self.add("q","health",minimum=2)
+        self.add("v","health_regeneration")
+        self.add("w","health_regeneration")
 
-        self.add("d","armour",0.5)
-        self.add("d","armour",0.3,minimum=2)
-        self.add("x","armour",0.5)
-        self.add("x","armour",0.3,minimum=2)
-        self.add("y","armour",0.5)
-        self.add("y","armour",0.3,minimum=2)
-        self.add("z","armour",0.5)
-        self.add("z","armour",0.3,minimum=2)
+        self.add("d","armour")
+        self.add("d","armour",minimum=2)
+        self.add("x","armour")
+        self.add("x","armour",minimum=2)
+        self.add("y","armour")
+        self.add("y","armour",minimum=2)
+        self.add("z","armour")
+        self.add("z","armour",minimum=2)
 
         if(self.m_count_attribs_limit < len(self.m_unit.m_attribs.keys())):
             #selecting N from the highlighted attributes

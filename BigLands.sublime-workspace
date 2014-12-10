@@ -1,0 +1,583 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ran",
+				"randint"
+			],
+			[
+				"health",
+				"health_regeneration"
+			],
+			[
+				"critical_",
+				"critical_chance"
+			],
+			[
+				"click",
+				"clickedOn"
+			],
+			[
+				"cli",
+				"clickedOn"
+			],
+			[
+				"sta",
+				"starting_attribs"
+			],
+			[
+				"sour",
+				"source_unit_ranger"
+			],
+			[
+				"act",
+				"actorsHatred"
+			],
+			[
+				"m_ch",
+				"m_chart"
+			],
+			[
+				"fi",
+				"findMostHated"
+			],
+			[
+				"m",
+				"m_chart"
+			],
+			[
+				"actors",
+				"actorsInScene"
+			],
+			[
+				"m_a",
+				"m_chartIndex"
+			],
+			[
+				"m_",
+				"m_alive"
+			],
+			[
+				"al",
+				"m_alive"
+			],
+			[
+				"m_c",
+				"m_chart"
+			],
+			[
+				"Ev",
+				"Event_Insult"
+			],
+			[
+				"de",
+				"description"
+			],
+			[
+				"ac",
+				"ActorList"
+			],
+			[
+				"Actor",
+				"ActorList"
+			],
+			[
+				"m_Cha",
+				"m_chartIndex"
+			],
+			[
+				"Evn",
+				"Event_Want_Dead"
+			],
+			[
+				"Acto",
+				"ActorList"
+			],
+			[
+				"name",
+				"m_name"
+			],
+			[
+				"gen",
+				"gen_ability"
+			],
+			[
+				"level",
+				"level_up"
+			],
+			[
+				"min",
+				"min_value"
+			],
+			[
+				"ico",
+				"ico_vals"
+			],
+			[
+				"count",
+				"count_attribs"
+			],
+			[
+				"source",
+				"source_unit_warlock"
+			],
+			[
+				"mon",
+				"monster_race_giant"
+			],
+			[
+				"attack_",
+				"attack_damage"
+			],
+			[
+				"random",
+				"random_armour_piece"
+			],
+			[
+				"re",
+				"recalc_bonus"
+			],
+			[
+				"souce_",
+				"source_unit_scout"
+			],
+			[
+				"criti",
+				"critical_chance"
+			],
+			[
+				"c",
+				"critical_chance"
+			],
+			[
+				"att",
+				"attack_damage"
+			],
+			[
+				"int",
+				"intelligence"
+			],
+			[
+				"source_class_",
+				"source_class_reaver"
+			],
+			[
+				"source_unit",
+				"source_unit_scout"
+			],
+			[
+				"m_b",
+				"m_bonus"
+			],
+			[
+				"draw",
+				"draw_message"
+			],
+			[
+				"out",
+				"out_chunks"
+			],
+			[
+				"m_su",
+				"m_surface_array"
+			],
+			[
+				"m_w",
+				"m_water_map"
+			],
+			[
+				"getNeigh",
+				"getNeighborThree"
+			],
+			[
+				"cell",
+				"cellsY"
+			],
+			[
+				"rounded",
+				"roundedness"
+			],
+			[
+				"Game",
+				"Game_Actor"
+			],
+			[
+				"Game_",
+				"Game_Actor"
+			],
+			[
+				"til",
+				"tile_size"
+			],
+			[
+				"m_height",
+				"m_height_map"
+			],
+			[
+				"mo",
+				"movement_speed"
+			],
+			[
+				"ge",
+				"get_rawtime"
+			],
+			[
+				"__",
+				"__init__"
+			],
+			[
+				"m_action",
+				"m_action_args"
+			],
+			[
+				"if",
+				"ifmain	if __name__ == '__main__'"
+			],
+			[
+				"name_",
+				"name_split"
+			],
+			[
+				"str",
+				"stringList"
+			],
+			[
+				"spli",
+				"split_by_syllable"
+			],
+			[
+				"first",
+				"firstNames"
+			],
+			[
+				"firs",
+				"firstNames"
+			],
+			[
+				"fir",
+				"firstNames"
+			],
+			[
+				"list",
+				"listOfIndecies"
+			],
+			[
+				"get_in",
+				"get_index_for_pos"
+			],
+			[
+				"g_spr",
+				"g_spritesize"
+			],
+			[
+				"g_inventory_",
+				"g_inventory_sprite"
+			],
+			[
+				"m_i",
+				"m_inventory"
+			],
+			[
+				"get",
+				"get_item"
+			],
+			[
+				"toD",
+				"to_dict"
+			],
+			[
+				"le",
+				"level_up"
+			],
+			[
+				"app",
+				"applied_bonus"
+			],
+			[
+				"bonus",
+				"bonus_unit"
+			],
+			[
+				"arm",
+				"armour_block"
+			],
+			[
+				"ar",
+				"armour_block"
+			],
+			[
+				"hea",
+				"health_regen"
+			],
+			[
+				"he",
+				"health_regen"
+			],
+			[
+				"a",
+				"armour"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Jason/Documents/GitHub/BigLands/BigLands.sublime-project",
+		"/C/Users/Jason/Documents/GitHub/BigLands/item.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/ability.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/unit.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/util.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/sprite_sheet.py",
+		"/C/Users/Jason/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Jason/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/Jason/Dropbox/Code/RPG_GDD.diff",
+		"/C/Users/Jason/Dropbox/Documents/game concepts.diff",
+		"/C/Users/Jason/Desktop/Trololo/trunk/Assets/Scripts/Level Design/HexLife/HexShaderManipulator.cs",
+		"/C/Users/Jason/Desktop/Trololo/trunk/Assets/Scripts/Player and Camera/ArthropodControl.cs",
+		"/C/Users/Jason/Documents/GitHub/BigLands/map_generation/dungeon.py",
+		"/C/Users/Jason/Dropbox/Code/rpg lists and generators 2.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/game_object.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/game_actor.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/game.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/screen.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/globals.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/BigLands.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/tile_map.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/map_generation/Geography.py",
+		"/C/Users/Jason/Desktop/Trololo/trunk/Assets/Scripts/Player and Camera/Constants.cs",
+		"/C/Users/Jason/Documents/GitHub/BigLands/map_generation/__init__.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/map_generation/ca_cave_demo.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/map_generation/DisjointSet.py",
+		"/C/Users/Jason/Desktop/R01-SVN/trunk/Assets/Scripts/ArthropodControl.cs",
+		"/C/Users/Jason/Desktop/R01-SVN/trunk/Assets/Scripts/Angler.cs",
+		"/C/Users/Jason/Dropbox/Code/rpg_automatic_writing.py",
+		"/C/Users/Jason/Dropbox/Code/New Python Geography/Canyon_Processor.py",
+		"/C/Users/Jason/Dropbox/Code/Python Tile Generation/hills and regions/new_main.py",
+		"/C/Users/Jason/Dropbox/Code/Python Tile Generation/hills and regions/functions.py",
+		"/G/Week 2 - Advanced Camera Systems/Assets/Scripts/Player.cs",
+		"/G/Week 2 - Advanced Camera Systems/Assets/Scripts/ThirdPersonCamera.cs",
+		"/C/Users/Jason/Dropbox/Code/RPG/JRPG/unit.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/Saved Games/message.tmp",
+		"/C/Users/Jason/Desktop/Addison's Society/Page 1.pdf",
+		"/C/Users/Jason/Desktop/Addison's Society/Page 2.pdf",
+		"/C/Users/Jason/Dropbox/Code/New Python Geography/Geography_3.py",
+		"/C/Users/Jason/Dropbox/Code/New Python Geography/hills.py",
+		"/C/Users/Jason/Dropbox/Code/New Python Geography/perlin.py",
+		"/C/Users/Jason/Dropbox/Code/New Python Geography/voronoi.py",
+		"/C/Users/Jason/Dropbox/Code/Python Tile Generation/Rolling Hills.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/gaussian_blur.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/map_generation/perlin.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/timer.py",
+		"/C/Users/Jason/Downloads/1403970461007.gif",
+		"/C/Users/Jason/Documents/GitHub/BigLands/font_fx.py",
+		"/C/Users/Jason/.gimp-2.8/scripts/batch-invtrans.scm",
+		"/C/Users/Jason/Dropbox/Documents/words3.odt",
+		"/C/Users/Jason/Documents/GitHub/BigLands/Maps/__init__.py",
+		"/C/Users/Jason/Documents/GitHub/BigLands/Maps/Geography.py",
+		"/C/Users/Jason/Dropbox/Code/Python Tile Generation/BasicTiles.png",
+		"/C/Users/Jason/Documents/GitHub/BigLands/.gitignore",
+		"/C/Users/Jason/Dropbox/Code/RPG/game.py",
+		"/C/Users/Jason/Dropbox/Code/ShipStats.py",
+		"/C/Users/Jason/Desktop/Jason's Geological Model/Geography.py",
+		"/E/python.txt",
+		"/C/Users/Jason/Dropbox/Code/Python Tile Generation/functions.py",
+		"/C/Users/Jason/Dropbox/Code/noise-1.2.1/_perlin.c",
+		"/C/Users/Jason/Dropbox/Code/noise-1.2.1/_noise.h",
+		"/C/Users/Jason/Downloads/hg_the_timeless/hg_the_timeless.nfo",
+		"/C/Users/Jason/Dropbox/Code/Jason's RPG/unit.py",
+		"/C/Users/Jason/Dropbox/Code/Jason's RPG/RPG4.py",
+		"/C/Users/Jason/Dropbox/Code/Jason's RPG/RPG2.py",
+		"/C/Users/Jason/Dropbox/Code/game.py"
+	],
+	"find":
+	{
+		"height": 42.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"C:\\Users\\Jason\\Dropbox\\Code\\Python Tile Generation",
+			"C:\\Users\\Jason\\Documents\\GitHub\\BigLands",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"globals.icons_ov",
+			"print",
+			"self.image",
+			"ico_vals",
+			"Effect",
+			"write_file",
+			"random.random",
+			"2,1",
+			"\n    ",
+			"attribute",
+			"2048",
+			"processing",
+			"self.m_typemap[x][y]==3",
+			"self.m_typemap[x][y] == 3",
+			"self.m_typemap[x][y]==3",
+			"subsurface",
+			"\n    ",
+			"):\n",
+			"size_of_chunk",
+			"return_matrix",
+			"print",
+			"x,y",
+			"imsave",
+			")",
+			"tw",
+			"	",
+			"'",
+			"name_split",
+			"area_name",
+			"ncip",
+			"print",
+			"()\n"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"random.uniform",
+			"random.random(stat_limits[0],stat_limits[1]),random.random(stat_limits[2],stat_limits[3])",
+			"random.random(stat_limits[0],stat_limits[1]),random.random(stat_limits[2],stat_limits[3]",
+			"Attribute",
+			"self.m_chunk_size",
+			"processed_matrix",
+			"    ",
+			"sylable_name"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 36.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"project": "BigLands.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 268.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

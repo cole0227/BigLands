@@ -13,6 +13,7 @@ from timer import *
 from util import *
 from unit import *
 from ability import *
+from roman import int_to_roman as roman
 
 column_type_name = ["ring","ring","ring","sling","boots","boots",
 "sword","sword","sword","sword","sword","sword","knife","knife","knife",
@@ -58,10 +59,15 @@ def make_item(bonus_count = 4, level = 0):
 		else:
 			name = random.choice(("Worn", "Old", "Musty", "Bent", "Cracked"))+" "+name
 		name = name.replace("_"," ").title()
+		if(level > 0):
+			name += " " + str(roman(level))
 
-		print (name+" ["+str(item_unit.m_level)+"]\n"+unit_title_name).replace("_"," ").title()
+		print (name+"\n"+unit_title_name.replace("_"," ").title())
 	else:
-		print name.title()
+		name = name.title()
+		if(level > 0):
+			name += " " + str(roman(level))
+		print name
 	print
 
 	icon = globals.icons_items.image_by_coords(60,col,row)
@@ -124,4 +130,4 @@ for i in range(1):
 	i = item_generator(0)
 	print i
 	for j in range(12):
-		make_item(5)
+		make_item(5,4)
