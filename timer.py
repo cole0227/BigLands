@@ -38,9 +38,12 @@ class Timer(object):
 
         return time.time()-self.current
 
-    def set(self, time):
+    def set(self, new_time=None):
 
-        self.time = time
+        if(new_time != None):
+            self.time = new_time
+        else:
+            self.time = time.time()
 
     def __str__(self):
 

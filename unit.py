@@ -90,10 +90,10 @@ class Unit(object):
 
         return otr
 
-    def random_attrib(self):
+    def random_attrib(self,minimum=0):
         temp_list = []
         for key in self.m_attribs.keys():
-            if(str(self.m_attribs[key]) != "0"):
+            if(self.m_attribs[key] > minimum):
                 temp_list.append(key)
         return random.choice(temp_list)
 

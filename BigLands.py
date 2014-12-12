@@ -64,7 +64,7 @@ def main_init():
     random.seed()
 
     #set up the window
-    globals.screen_resolution = (600,400)
+    globals.screen_resolution = (1000,400)
     globals.window_surface = pygame.display.set_mode((globals.screen_resolution[0],globals.screen_resolution[1]), 0, 32) 
     pygame.display.set_caption(globals.game_name)
     message("")

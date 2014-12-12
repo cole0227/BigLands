@@ -16,8 +16,10 @@ from ability import *
 from roman import int_to_roman as roman
 
 column_type_name = ["ring","ring","ring","sling","boots","boots",
-"sword","sword","sword","sword","sword","sword","knife","knife","knife",
-"totem","wand","wand","wand","armour","armour","book","book","book","book","book","book","book","book","book","book","gem","sigil","sigil","sigIl","sigIl","Sigil","Sigil","siGil","siGil","sigiL","sigiL"]
+  "sword","sword","sword","sword","sword","sword","knife","knife","knife",
+  "totem","wand","wand","wand","armour","armour",
+  "book","book","book","book","book","book","book","book","book","book",
+  "gem","sigil","sigil","sigIl","sigIl","Sigil","Sigil","siGil","siGil","sigiL","sigiL"]
 
 def make_item(bonus_count = 4, level = 0):
 	col = random.randint(0,len(column_type_name)-1)
@@ -71,9 +73,12 @@ def make_item(bonus_count = 4, level = 0):
 	print
 
 	icon = globals.icons_items.image_by_coords(60,col,row)
-	icon.blit(globals.icons_items_outlines,(0,0),(60*(3-bonus_count/2),0,60,60))
-	icon.blit(globals.icons_items_outlines,(1,1),(60*(3-bonus_count/2),0,60,60))
-	icon.blit(globals.icons_items_outlines,(-1,-1),(60*(3-bonus_count/2),0,60,60))
+	icon.blit(globals.icons_items_outlines, (0,0),   (60*(3-(bonus_count+1)/2), 0, 60, 60))
+	icon.blit(globals.icons_items_outlines, (2,2),   (60*(3-(bonus_count+1)/2), 0, 60, 60))
+	icon.blit(globals.icons_items_outlines, (-2,-2), (60*(3-(bonus_count+1)/2), 0, 60, 60))
+	icon.blit(globals.icons_items_outlines, (-2,2),  (60*(3-(bonus_count+1)/2), 0, 60, 60))
+	icon.blit(globals.icons_items_outlines, (2,-2),  (60*(3-(bonus_count+1)/2), 0, 60, 60))
+	icon.convert()
 	#pygame.image.save(icon,"Saved Games/0/Items/"+name+".png")
 	#write_file("Saved Games/0/Items/"+name+".pkl",item_unit)
 
@@ -130,4 +135,5 @@ for i in range(1):
 	i = item_generator(0)
 	print i
 	for j in range(12):
-		make_item(5,4)
+		item = make_item(random.randint(1,6),random.randint(1,6))
+		pygame.image.save(item[2],item[0]+".png")

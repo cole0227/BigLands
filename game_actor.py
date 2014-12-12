@@ -1,6 +1,7 @@
 import random
 import copy
 import math
+import sys
 
 import pygame
 import pygame.time
@@ -20,10 +21,16 @@ class Game_Actor(Game_Object):
         self.m_unit = unit
         self.m_attack_timer = Timer(400/(unit.get("attack_speed")+100))
         self.m_animation_lock = 0
+        self.m_stun_timer = Timer(0.2)
+        self.m_stun_timer.set(0) # set the timer to have run on January 1st, 1970
 
     def draw(self):
-        
-        Game_Object.draw(self)
+        shakeX,shakeY = 0,0
+        if(not self.m_stun_timer.test()):
+            shakeX = random.randint(-2,2)
+            shakeY = random.randint(-2,2)
+            
+        globals.window_surface.blit(self.m_icon, (int(self.m_pos[0]-self.m_width/2)+shakeX,int(self.m_pos[1]-self.m_width/2)+shakeY))
 
     def input(self, event):
 
@@ -55,13 +62,12 @@ class Game_Actor(Game_Object):
     def attack(self, target, mult):
         print "Can Attack:", str(self.m_attack_timer)
         if(self.m_attack_timer.attempt_action()):
-
             print "Damage: ",self.m_unit.attack(target.m_unit,mult)
-
+            self.m_stun_timer.set()
 
     def __str__(self):
 
-        return self.m_name+"<#"+self.m_id+">\n"+str(self.m_unit)
+        return self.m_name+"<#"+str(self.m_id)+">\n"+str(self.m_unit)
 
 class Player_Actor(Game_Actor):
 
@@ -70,13 +76,14 @@ class Player_Actor(Game_Actor):
         Game_Actor.__init__(self, posn, name, icon, width, unit)
 
         self.m_target = [posn[0],posn[1]]
-        self.m_leftHoldFrames = 0;
-        self.m_rightHoldFrames = 0;
+        self.m_leftHoldFrames = 0
+        self.m_rightHoldFrames = 0
         self.m_mouse_pos = (0,0)
 
     def input(self, event):
 
         Game_Actor.input(self,event)
+
     def update(self,delta):
 
         Game_Actor.update(self,delta)
@@ -111,9 +118,9 @@ class Player_Actor(Game_Actor):
                 self.right_hold()
                 self.m_rightHoldFrames = 0
 
-        dx = self.m_target[0] - self.m_pos[0]
-        dy = self.m_target[1] - self.m_pos[1]
-        dBoth = (dx**2+dy**2)**(0.5)
+        dx = float(self.m_target[0] - self.m_pos[0])
+        dy = float(self.m_target[1] - self.m_pos[1])
+        dBoth = float(dx**2+dy**2)**(0.5)
         d = self.m_unit.get("movement_speed") * delta
 
         if (dBoth >= d):
@@ -124,17 +131,21 @@ class Player_Actor(Game_Actor):
             elif( dy != 0 ):
                 self.move([0, dy/abs(dy) * d])
         else: # we're not in a movement state
-            print "Reseting Target to Self"
+            #print "Reseting Target to Self"
             self.m_target = self.m_pos
 
     def left_click(self):
         distance = (self.m_pos[0]-self.m_mouse_pos[0])**2+(self.m_pos[1]-self.m_mouse_pos[1])**2
+        #print "Distance:",distance**(0.5),"Thinger:",self.m_unit.get("attack_range")+self.m_width/2.0+1
         if((self.m_unit.get("attack_range")+self.m_width/2.0+1)**2 > distance):
             clickedOn = globals.screens["Game"].object_at(self.m_mouse_pos,self)
             print "Close:",self.m_mouse_pos
-            if(clickedOn != None):
-                print "Attack!"
+            if(clickedOn != None and type(clickedOn) is Game_Actor):
+                print "Attack the thing with " + str(clickedOn.m_unit.get("health")) + "HP"
+                Game_Actor.attack(self, clickedOn, 1)
                 self.m_animation_lock = 1.5
+            else:
+                self.m_target = self.m_mouse_pos
 
         else:
             clickedOn = globals.screens["Game"].object_at(self.m_mouse_pos,self)
