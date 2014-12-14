@@ -88,9 +88,9 @@ class Player_Actor(Game_Actor):
         Game_Actor.input(self,event)
 
     def update(self,delta):
-        if(self.m_stun_timer.test()):
-            Game_Actor.update(self,delta)
+        Game_Actor.update(self,delta)
 
+        if(self.m_stun_timer.test()):
             self.m_mouse_pos = pygame.mouse.get_pos()
 
             # clicking actions
@@ -149,7 +149,15 @@ class Player_Actor(Game_Actor):
         else:
             self.m_target = self.m_mouse_pos
             if(clickedOn != None):
+                #naive targeting
                 self.m_target = [clickedOn.m_pos[0],clickedOn.m_pos[1]]
+                
+                distance = ((self.m_pos[0]-self.m_target[0])**2+(self.m_pos[1]-self.m_target[1])**2 )**0.5
+                slope = ((self.m_target[0]-self.m_pos[0])/distance,(self.m_target[1]-self.m_pos[1])/distance)
+                x = self.m_target[0]-slope[0]*(self.m_unit.get("attack_range")+self.m_width/2.0+clickedOn.m_width/2.0+1)
+                y = self.m_target[1]-slope[1]*(self.m_unit.get("attack_range")+self.m_width/2.0+clickedOn.m_width/2.0+1)
+                self.m_target = [x,y]
+
 
     def right_click(self):
         print "Right Click"

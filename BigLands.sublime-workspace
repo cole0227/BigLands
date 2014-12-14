@@ -355,7 +355,7 @@
 			"file": "timer.py",
 			"settings":
 			{
-				"buffer_size": 1154,
+				"buffer_size": 1158,
 				"line_ending": "Windows"
 			}
 		},
@@ -363,7 +363,7 @@
 			"file": "game_actor.py",
 			"settings":
 			{
-				"buffer_size": 5399,
+				"buffer_size": 6031,
 				"line_ending": "Windows"
 			}
 		}
@@ -639,15 +639,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1154,
+						"buffer_size": 1158,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								720,
-								720
+								1049,
+								1049
 							]
 						],
 						"settings":
@@ -656,8 +656,8 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
-						"translation.x": -0.0,
-						"translation.y": 780.0,
+						"translation.x": 0.0,
+						"translation.y": 900.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -669,15 +669,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5399,
+						"buffer_size": 6031,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								570,
-								567
+								5660,
+								5660
 							]
 						],
 						"settings":
@@ -687,7 +687,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 390.0,
+						"translation.y": 3698.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -729,7 +729,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 187.0
+		"height": 190.0
 	},
 	"output.find_results":
 	{
