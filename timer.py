@@ -31,19 +31,22 @@ class Timer(object):
         return False
 
     def test(self):
-
+        import random
+        if(random.random < 0.05):
+            print self.current, self.time, time.time()
         return (self.current + self.time <= time.time())
+
+    def trigger(self):
+        self.current = time.time()
 
     def get(self):
 
         return time.time()-self.current
 
-    def set(self, new_time=None):
+    def set(self, new_time):
 
         if(new_time != None):
             self.time = new_time
-        else:
-            self.time = time.time()
 
     def __str__(self):
 
