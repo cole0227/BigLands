@@ -36,17 +36,17 @@ class Resource(object):
 				string_name = ""
 
 			string_count = self.get()
-			dims = globals.basic_font[7].size(string_name+string_count)
+			dims = globals.basic_font[4].size(string_name+string_count)
 
 			# only the first time
 			if(self.m_stale_val == -42):
 				self.m_image = pygame.transform.scale(self.m_image,(dims[1],dims[1]));
 
-			resource_offset = globals.basic_font[7].size(string_name)[0]
+			resource_offset = globals.basic_font[4].size(string_name)[0]
 			m_surf = pygame.Surface((dims[0]+dims[1]+2,dims[1]+2),SRCALPHA,32).convert_alpha()
-			m_surf.blit(globals.basic_font[7].render(string_name+string_count,1,(0,0,0)),(dims[1]+2,2))
-			m_surf.blit(globals.basic_font[7].render(string_name,1,(240,230,140)),(dims[1],0))
-			m_surf.blit(globals.basic_font[7].render(string_count,1,self.m_image.get_at((dims[1]/2,dims[1]/2))),(resource_offset+dims[1],0))
+			m_surf.blit(globals.basic_font[4].render(string_name+string_count,1,(0,0,0)),(dims[1]+2,2))
+			m_surf.blit(globals.basic_font[4].render(string_name,1,(240,230,140)),(dims[1],0))
+			m_surf.blit(globals.basic_font[4].render(string_count,1,self.m_image.get_at((dims[1]/2,dims[1]/2))),(resource_offset+dims[1],0))
 			m_surf.blit(self.m_image,(0,0))
 
 			self.m_stale_val = self.m_val
@@ -109,9 +109,9 @@ class Square_Resource(Resource):
 
 		if(self.m_val != self.m_stale_val):
 			string_count = str(self.get())
-			dims = globals.basic_font[7].size(string_count)
+			dims = globals.basic_font[4].size(string_count)
 			w = int(dims[1]*3)
-			#w=60
+			w=60
 
 			# only the first time
 			if(self.m_stale_val == -42):
@@ -123,12 +123,12 @@ class Square_Resource(Resource):
 
 			m_surf = pygame.Surface((w,w),SRCALPHA,32).convert_alpha()
 			m_surf.blit(self.m_image,(0,0))
-			shadow = globals.basic_font[7].render(string_count,1,(0,0,0))
+			shadow = globals.basic_font[4].render(string_count,1,(0,0,0))
 			m_surf.blit(shadow,(w-dims[0]-4+2,w-dims[1]+4+2))
 			#m_surf.blit(shadow,(w-dims[0]-4-2,w-dims[1]+4-2))
 			#m_surf.blit(shadow,(w-dims[0]-4+2,w-dims[1]+4-2))
 			#m_surf.blit(shadow,(w-dims[0]-4-2,w-dims[1]+4+2))
-			m_surf.blit(globals.basic_font[7].render(string_count,1,(240,230,140)),(w-dims[0]-4,w-dims[1]+4))#self.m_image.get_at((w/2,w/2))),(w-dims[0]-4,w-dims[1]+4))
+			m_surf.blit(globals.basic_font[4].render(string_count,1,(240,230,140)),(w-dims[0]-4,w-dims[1]+4))#self.m_image.get_at((w/2,w/2))),(w-dims[0]-4,w-dims[1]+4))
 
 			self.m_stale_val = self.m_val
 
@@ -166,7 +166,7 @@ if __name__ == '__main__':
 	pygame.image.save(r.get_surface(),""+r.m_name+"7.png")
 	pygame.image.save(r.get_cost_surface(12),""+r.m_name+"_cost.png")
 
-	r2 = Resource("Demon Hearts",pygame.image.load('Assets/Heart.png').convert_alpha(),0)
+	r2 = Square_Resource("Demon Hearts",pygame.image.load('Assets/Heart.png').convert_alpha(),0)
 	pygame.image.save(r2.get_surface(),""+r2.m_name+".png")
 	r2.add(3451289645398)
 	pygame.image.save(r2.get_surface(),""+r2.m_name+"2.png")

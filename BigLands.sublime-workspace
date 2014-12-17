@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"str",
+				"string_count"
+			],
+			[
+				"m_",
+				"m_val"
+			],
+			[
 				"min",
 				"minimum"
 			],
@@ -62,10 +70,6 @@
 			[
 				"m_a",
 				"m_chartIndex"
-			],
-			[
-				"m_",
-				"m_alive"
 			],
 			[
 				"al",
@@ -244,10 +248,6 @@
 				"name_split"
 			],
 			[
-				"str",
-				"stringList"
-			],
-			[
 				"spli",
 				"split_by_syllable"
 			],
@@ -331,7 +331,7 @@
 			"file": "BigLands.py",
 			"settings":
 			{
-				"buffer_size": 4757,
+				"buffer_size": 5049,
 				"line_ending": "Windows"
 			}
 		},
@@ -379,7 +379,7 @@
 			"file": "resource.py",
 			"settings":
 			{
-				"buffer_size": 1128,
+				"buffer_size": 5448,
 				"line_ending": "Windows"
 			}
 		},
@@ -388,6 +388,14 @@
 			"settings":
 			{
 				"buffer_size": 2151,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "util.py",
+			"settings":
+			{
+				"buffer_size": 7610,
 				"line_ending": "Windows"
 			}
 		}
@@ -416,6 +424,8 @@
 	},
 	"file_history":
 	[
+		"/C/Users/cole0227/Desktop/BigLands/font_fx.py",
+		"/C/Users/cole0227/Desktop/BigLands/unit.py",
 		"/C/Users/Jason/Documents/GitHub/BigLands/ability.py",
 		"/C/Users/Jason/Documents/GitHub/BigLands/item.py",
 		"/C/Users/Jason/Documents/GitHub/BigLands/unit.py",
@@ -503,6 +513,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"basic_font[4]",
 			"m_target",
 			"globals.icons_ov",
 			"print",
@@ -543,6 +554,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"basic_font[7]",
 			"random.uniform",
 			"random.random(stat_limits[0],stat_limits[1]),random.random(stat_limits[2],stat_limits[3])",
 			"random.random(stat_limits[0],stat_limits[1]),random.random(stat_limits[2],stat_limits[3]",
@@ -569,15 +581,15 @@
 					"file": "BigLands.py",
 					"settings":
 					{
-						"buffer_size": 4757,
+						"buffer_size": 5049,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1407,
-								1463
+								2415,
+								2435
 							]
 						],
 						"settings":
@@ -587,7 +599,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1456.0,
+						"translation.y": 1690.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -716,8 +728,8 @@
 						"selection":
 						[
 							[
-								2617,
-								2675
+								2165,
+								2241
 							]
 						],
 						"settings":
@@ -726,7 +738,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1794.0,
+						"translation.y": 1508.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -736,23 +748,24 @@
 					"file": "resource.py",
 					"settings":
 					{
-						"buffer_size": 1128,
+						"buffer_size": 5448,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								472,
-								472
+								5024,
+								5024
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 468.0,
+						"translation.y": 3978.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -769,8 +782,8 @@
 						"selection":
 						[
 							[
-								331,
-								331
+								668,
+								668
 							]
 						],
 						"settings":
@@ -780,7 +793,35 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 156.0,
+						"translation.y": 936.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "util.py",
+					"settings":
+					{
+						"buffer_size": 7610,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								261,
+								261
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 390.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -852,6 +893,6 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 139.0,
+	"side_bar_width": 144.0,
 	"status_bar_visible": true
 }
