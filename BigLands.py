@@ -83,8 +83,12 @@ def main_init():
     globals.icons_ov = Sprite_Sheet("Assets/Game-Icons-Mods/overlays2.png","Alpha")
     globals.icons_corner_chunk = Sprite_Sheet("Assets/Game-Icons-Mods/corners.png","Alpha")
     globals.icons_overtest = pygame.image.load("Assets/Game-Icons-Mods/overlays2.png")
-
     globals.icons_overtest.convert_alpha()
+
+    globals.icons_items = Sprite_Sheet("Assets/PD/Free_Icons.png")
+    globals.icons_items_outlines = pygame.image.load("Assets/PD/Free_Icons_Outlines.png")
+    globals.icons_items_outlines.set_colorkey((0,0,0))
+    globals.icons_items_outlines = globals.icons_items_outlines.convert_alpha()
 
     print "Loaded Sprites"
 
