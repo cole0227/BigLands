@@ -10,6 +10,13 @@ import globals
 from timer import *
 from util import *
 
+attrib_list = ("health",  "health_regeneration", "armour",  "attack_speed", "attack_damage", "movement_speed", "critical_chance", "critical_damage", "dodge_chance", "attack_range",
+    "toughness", "agility", "constitution", "finesse", "might", "precision", "intelligence", "luck")
+
+def get_random_attrib():
+
+    return attrib_list[random.randint(0,len(attrib_list)-1)]
+
 class Attribute(object):
     
     def __init__(self, owner, base=100, growth=0, bonus=0):
@@ -97,6 +104,13 @@ class Unit(object):
                 temp_list.append(key)
         return random.choice(temp_list)
 
+    def count_attribs(self,minimum=0):
+        count = 0
+        for key in self.m_attribs.keys():
+            if(self.m_attribs[key] > minimum):
+                count+=1
+        return count
+
     def output_attribs(self):
 
         string = "Level: "+str(self.m_level)
@@ -127,6 +141,10 @@ class Unit(object):
             string += "M:"+str(self.m_attribs["might"])+" "
         if("precision" in self.m_attribs):
             string += "P:"+str(self.m_attribs["precision"])+" "
+        if("intelligence" in self.m_attribs):
+            string += "I:"+str(self.m_attribs["intelligence"])+" "
+        if("luck" in self.m_attribs):
+            string += "L:"+str(self.m_attribs["luck"])+" "
         string += "}"
 
         return string
@@ -140,6 +158,8 @@ class Unit(object):
                 self.m_attribs[attrib]=unit.m_attribs[attrib]
                 self.m_attribs[attrib].m_owner=self
 
+        return self
+
     def level_up(self,level=1):
 
         self.m_level += level
@@ -147,8 +167,8 @@ class Unit(object):
     def attrib_count(self, minimum=0):
 
         c = 0
-        for a in self.m_attribs.values():
-            if(a.get() > minimum):
+        for a in self.m_attribs.keys():
+            if(self.m_attribs[a].get() > minimum):
                 c += 1
         return c
 
@@ -179,6 +199,8 @@ class Actor_Unit(Unit):
         for attrib in self.m_attribs.keys():
 
             self.m_attribs[attrib].reset()
+
+        return self
 
     def recalc_bonus(self):
 
@@ -455,3 +477,24 @@ if __name__ == '__main__':
 
         if(player1.m_current_health < 1 or player2.m_current_health < 1):
             break
+
+    un = source_unit_friar
+    un.clear_bonus()
+    print un.output_attribs() + "\n---------------"
+    un.merge(monster_race_zombie)
+    un.clear_bonus()
+    print un.output_attribs() + "\n---------------"
+    un.level_up(50)
+    un.clear_bonus()
+    print un.output_attribs() + "\n---------------"
+    un.merge(source_class_reaver)
+    un.clear_bonus()
+    print un.output_attribs() + "\n---------------"
+    un.level_up(50)
+    un.clear_bonus()
+    print un.output_attribs() + "\n---------------"
+
+    for a in un.m_attribs.keys():
+        un.m_attribs[a].m_base = 0
+    un.clear_bonus()
+    print un.output_attribs() + "\n---------------"

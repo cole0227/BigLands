@@ -29,6 +29,7 @@ class Game_Object(object):
         print self.m_pos
 
         self.m_delete = False
+        self.m_disabled = False
 
         self.m_id = globals.id_game_object
         globals.id_game_object += 1
@@ -62,6 +63,11 @@ class Game_Object(object):
         globals.window_surface.blit(self.m_icon, (int(self.m_pos[0]-self.m_width/2),int(self.m_pos[1]-self.m_width/2)))
 
     def update(self, delta):
+
+        if(not self.m_disabled):
+            self.update_action(delta)
+
+    def update_action(self, delta):
 
         pass
 

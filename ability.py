@@ -60,13 +60,13 @@ Effect_Attrib = {"Tough":"health",
         "Ground":"health",
         "Psychic":"precision",
         "Rock":"constitution",
-        "Ice":"health",
-        "Bug":"health",
+        "Ice":"intelligence",
+        "Bug":"intelligence",
         "Dragon":"movement_speed",
         "Ghost":"health",
-        "Dark":"health",
+        "Dark":"luck",
         "Steel":"movement_speed",
-        "Fairy":"health",
+        "Fairy":"luck",
         "Gooey":"movement_speed",
         "Slimey":"movement_speed",
         "Lesser":"agility",
@@ -95,7 +95,10 @@ attribute_multiplier = {"health": 8,
                         "precision": 0.4,
                         "constitution": 0.4,
                         "toughness": 0.4,
-                        "might": 0.4}
+                        "might": 0.4,
+                        "intelligence": 0.4,
+                        "luck": 0.4,
+                        "attack_range": 1}
 
 class Ability_Unit_Builder(object):
 
@@ -158,8 +161,9 @@ class Ability_Unit_Builder(object):
         self.add("s","agility",minimum=3)
         self.add("t","toughness")
         self.add("t","toughness",minimum=3)
+        self.add("p","intelligence")
+        self.add("f","luck")
 
-        self.add("p","attack_damage")
         self.add("g","attack_damage")
         self.add("j","attack_damage")
         self.add("o","attack_speed")
@@ -170,7 +174,6 @@ class Ability_Unit_Builder(object):
         self.add("l","critical_chance")
         self.add("u","critical_damage")
         self.add("r","critical_damage")
-        self.add("f","critical_damage")
 
         self.add("i","dodge_chance")
 
@@ -187,8 +190,8 @@ class Ability_Unit_Builder(object):
         self.add("x","armour",minimum=2)
         self.add("y","armour")
         self.add("y","armour",minimum=2)
-        self.add("z","armour")
-        self.add("z","armour",minimum=2)
+        self.add("z","attack_range")
+        self.add("z","attack_range",minimum=2)
 
         if(self.m_count_attribs_limit < len(self.m_unit.m_attribs.keys())):
             #selecting N from the highlighted attributes
@@ -333,10 +336,10 @@ if __name__ == '__main__':
     globals.icons_overtest = pygame.image.load("Assets/Game-Icons-Mods/overlays2.png")
     globals.icons_overtest.convert_alpha()
 
-    gen = Ability(3,2).unit
+    gen = Ability(3,3).unit
     print gen.m_name
     print gen.output_attribs()
-    gen.m_level = 1
+    gen.m_level = 10
     print gen.output_attribs()
     #print gen[0].output_attribs()
     #pygame.image.save(gen[1],"Saved Games/0/Abilities/"+gen[0].m_name+".png")

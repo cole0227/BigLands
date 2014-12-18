@@ -42,10 +42,11 @@ class Game_Actor(Game_Object):
 
 
     def update(self, delta):
-        if(self.m_stun_timer.test()):
-            Game_Object.update(self, delta)
-
-            self.m_animation_lock -= delta;
+        # set m_disabled before calling up the heirarchy
+        self.m_disabled = (self.m_stun_timer.test() or self.m_animation_lock < 0)
+        Game_Object.update(self, delta)
+        self.m_animation_lock -= delta;
+    def update_action(self, delta):
 
             if(self.m_unit.m_current_health <= 0):
                 self.m_delete = True
@@ -88,54 +89,59 @@ class Player_Actor(Game_Actor):
         Game_Actor.input(self,event)
 
     def update(self,delta):
+
         Game_Actor.update(self,delta)
+        self.m_mouse_pos = pygame.mouse.get_pos()
 
-        if(self.m_stun_timer.test()):
-            self.m_mouse_pos = pygame.mouse.get_pos()
+            
 
-            # clicking actions
-            if pygame.mouse.get_pressed()[0]: # left click
-                self.m_leftHoldFrames += 1
-            else:
-                if  self.m_leftHoldFrames > 0:
-                    if(self.m_animation_lock < 0):
-                        self.left_click()
+    def update_action(self, delta):
+
+        Game_Actor.update_action(self, delta)
+        
+        # clicking actions
+        if pygame.mouse.get_pressed()[0]: # left click
+            self.m_leftHoldFrames += 1
+        else:
+            if  self.m_leftHoldFrames > 0:
+                if():
+                    self.left_click()
+            self.m_leftHoldFrames = 0
+
+        if self.m_leftHoldFrames >= globals.time_hold_mouse_button*globals.frame_rate:
+            if(self.m_animation_lock < 0):
+                self.left_hold()
                 self.m_leftHoldFrames = 0
 
-            if self.m_leftHoldFrames >= globals.time_hold_mouse_button*globals.frame_rate:
+        if pygame.mouse.get_pressed()[2]: # right click
+            self.m_rightHoldFrames += 1
+        else:
+            if self.m_rightHoldFrames > 0:
                 if(self.m_animation_lock < 0):
-                    self.left_hold()
-                    self.m_leftHoldFrames = 0
+                    self.right_click()
+            self.m_rightHoldFrames = 0
 
-            if pygame.mouse.get_pressed()[2]: # right click
-                self.m_rightHoldFrames += 1
-            else:
-                if self.m_rightHoldFrames > 0:
-                    if(self.m_animation_lock < 0):
-                        self.right_click()
+        if self.m_rightHoldFrames >= globals.time_hold_mouse_button*globals.frame_rate:
+
+            if(self.m_animation_lock < 0):
+                self.right_hold()
                 self.m_rightHoldFrames = 0
 
-            if self.m_rightHoldFrames >= globals.time_hold_mouse_button*globals.frame_rate:
+        dx = float(self.m_target[0] - self.m_pos[0])
+        dy = float(self.m_target[1] - self.m_pos[1])
+        dBoth = float(dx**2+dy**2)**(0.5)
+        d = self.m_unit.get("movement_speed") * delta
 
-                if(self.m_animation_lock < 0):
-                    self.right_hold()
-                    self.m_rightHoldFrames = 0
-
-            dx = float(self.m_target[0] - self.m_pos[0])
-            dy = float(self.m_target[1] - self.m_pos[1])
-            dBoth = float(dx**2+dy**2)**(0.5)
-            d = self.m_unit.get("movement_speed") * delta
-
-            if (dBoth >= d):
-                if( dx != 0 and dy != 0 ):
-                    self.move([d/dBoth*dx, d/dBoth*dy])
-                elif( dx != 0 ):
-                    self.move([dx/abs(dx) * d, 0])
-                elif( dy != 0 ):
-                    self.move([0, dy/abs(dy) * d])
-            else: # we're not in a movement state
-                #print "Reseting Target to Self"
-                self.m_target = self.m_pos
+        if (dBoth >= d):
+            if( dx != 0 and dy != 0 ):
+                self.move([d/dBoth*dx, d/dBoth*dy])
+            elif( dx != 0 ):
+                self.move([dx/abs(dx) * d, 0])
+            elif( dy != 0 ):
+                self.move([0, dy/abs(dy) * d])
+        else: # we're not in a movement state
+            #print "Reseting Target to Self"
+            self.m_target = self.m_pos
 
     def left_click(self):
 
@@ -162,6 +168,8 @@ class Player_Actor(Game_Actor):
     def right_click(self):
         print "Right Click"
         self.m_animation_lock = 0.9
+        for obj in globals.screens["Game"].objects_in_circle(self.m_mouse_pos,200,self):
+            obj.m_animation_lock = 1.0
 
     def left_hold(self):
         print "Left Hold"

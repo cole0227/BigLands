@@ -86,6 +86,15 @@ class Game(Screen):
 
         return None
 
+    def objects_in_circle(self, posn, radius, source):
+
+        ret = []
+        for obj in self.m_game_objects:
+            if(obj != source and
+               radius**2 > (posn[0]-obj.m_posn[0])**2+(posn[1]-obj.m_posn[1])**2):
+                ret.append(obj)
+        return ret
+
 if __name__ == '__main__':
 
     import BigLands

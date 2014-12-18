@@ -47,6 +47,7 @@ def make_item(bonus_count = 4, level = 0):
 	bonus_count = item_unit.attrib_count()
 
 	unit_title_name = (item_unit.output_attribs()).split("\n",1)
+	string_to_print = ""
 
 	if(len(unit_title_name)>1):
 		unit_title_name = "".join(re.split("\(|\)",unit_title_name[1])[0::2])
@@ -64,13 +65,12 @@ def make_item(bonus_count = 4, level = 0):
 		if(level > 0):
 			name += " " + str(roman(level))
 
-		print (name+"\n"+unit_title_name.replace("_"," ").title())
+		string_to_print = (name+"\n"+unit_title_name.replace("_"," ").title())
 	else:
 		name = name.title()
 		if(level > 0):
 			name += " " + str(roman(level))
-		print name
-	print
+		string_to_print = name
 
 	icon = globals.icons_items.image_by_coords(60,col,row)
 	icon.blit(globals.icons_items_outlines, (0,0),   (60*(3-(bonus_count+1)/2), 0, 60, 60))
@@ -82,10 +82,9 @@ def make_item(bonus_count = 4, level = 0):
 	#pygame.image.save(icon,"Saved Games/0/Items/"+name+".png")
 	#write_file("Saved Games/0/Items/"+name+".pkl",item_unit)
 
-	ret = (name, item_unit, icon, item_unit.attrib_count(), int(max(max(item_unit.m_level,0.5) * item_unit.attrib_count() * item_unit.attrib_count() * 10, 13)*random.uniform(0.7,1.3)))
+	ret = (name, item_unit, icon, item_unit.attrib_count(), int(max(max(item_unit.m_level,0.5) * item_unit.attrib_count() * item_unit.attrib_count() * 10, 13)*random.uniform(0.7,1.3)), string_to_print)
 	#has to be reset for the next item
 	bonus_count = 4
-
 	return ret
 	# item( name, unit, icon, bonus count, cost )
 
@@ -117,6 +116,7 @@ class item_generator(object):
 		string = ""
 		for i in self.d:
 			string += i[0]+" $"+str(i[4])+"\n"
+			string += i[1].output_attribs()+"\n"
 
 		return string
 
@@ -135,5 +135,9 @@ for i in range(1):
 	i = item_generator(0)
 	print i
 	for j in range(12):
-		item = make_item(random.randint(1,6),random.randint(1,6))
+		item = make_item(random.randint(4,4),random.randint(5,6))
 		pygame.image.save(item[2],item[0]+".png")
+		item[1].level_up(100)
+		item[1].clear_bonus()
+		print item[1].output_attribs()
+		print "--------------------"
