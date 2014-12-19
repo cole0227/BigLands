@@ -80,23 +80,23 @@ def stats_percentile( amatrix ):
         return sort[ min( max( int( ( amatrix.size - 1 ) * percent / 100), 0 ), amatrix.size - 1 ) ]
 
     final = numpy.zeros(( 11 )) 
-    for x in range( 0, 11 ):
+    for x in xrange( 0, 11 ):
 
         final[x] = mymatrix[ find_percentile( x * 10 ) ]
 
     return final
 
 #
-# Return values within a certain range
+# Return values within a certain xrange
 #
 def elevation_selection( amatrix, low, high, lowfill, highfill ):
 
     size = int( amatrix.size ** ( 0.5 ) )
     selection = numpy.zeros(( size, size )) + lowfill
 
-    for x in range( 0, size ):
+    for x in xrange( 0, size ):
     
-        for y in range( 0, size ):
+        for y in xrange( 0, size ):
         
             if( amatrix[x][y] >=  low and amatrix[x][y] <= high ):
             
@@ -114,9 +114,9 @@ def elevation_selection( amatrix, low, high, lowfill, highfill ):
 def matrix_fromto(amatrix,start,end):
 
     size = int( amatrix.size ** ( 0.5 ) )
-    for x in range( 0, size ):
+    for x in xrange( 0, size ):
     
-        for y in range( 0, size ):
+        for y in xrange( 0, size ):
     
             if(amatrix[x][y]==start):
                 
@@ -137,11 +137,11 @@ def matrix_redist(amatrix, vals):
     flat_matrix = processed_matrix.reshape( -1 )
     final_matrix = numpy.zeros((size,size))
     perc = [0]*(portions+1)
-    for i in range(0,portions+1):
+    for i in xrange(0,portions+1):
         perc[i]=100.0*i/portions
     perc = numpy.percentile(flat_matrix,perc)
 
-    for i in range(1,portions+1):
+    for i in xrange(1,portions+1):
         
         perc[i]
         if(vals[i]-vals[i-1] != 0 and perc[i-1]-perc[i] != 0):
@@ -291,8 +291,8 @@ if __name__ == '__main__':
     size = 1290
     height = numpy.zeros((size,size))
 
-    for x in range( 0, size ):
-        for y in range( 0, size ):
+    for x in xrange( 0, size ):
+        for y in xrange( 0, size ):
             height[x][y] = (x-size/2)**2+(y-size/2)**2
 
     imsave("1.png",height)

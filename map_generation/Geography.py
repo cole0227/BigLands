@@ -190,12 +190,12 @@ def erosion_thermal_helper_stupid( amatrix, x, y, minimum ):
 #
 def erosion_thermal( amatrix, its = 8, minimum = 5 ):
 
-    for z in range( 0, its ):
+    for z in xrange( 0, its ):
         
         size = int( amatrix.size ** ( 0.5 ) )
-        for x in range( 1, size-1 ):
+        for x in xrange( 1, size-1 ):
             
-            for y in range( 1, size-1 ):
+            for y in xrange( 1, size-1 ):
             
                 erosion_thermal_helper( amatrix, x, y, minimum )
                 erosion_thermal_helper_diag( amatrix, x, y, minimum )
@@ -212,7 +212,7 @@ def voronoi(amatrix,p=100,edge=15, step=4):
     
     points=zeros((p,2))
     size = int( amatrix.size ** ( 0.5 ) )
-    for z in range( 0, p ):
+    for z in xrange( 0, p ):
 
         width = size / ( p ** 0.5 )
         x =  (z) * width
@@ -225,14 +225,14 @@ def voronoi(amatrix,p=100,edge=15, step=4):
     
     kd = scipy.spatial.KDTree(points)
     
-    for x in range( 0, size, step ): # change step to 1 for accuracy
+    for x in xrange( 0, size, step ): # change step to 1 for accuracy
     
         #print 'row',x
-        for y in range( 0, size, step ): # change step to 1 for accuracy
+        for y in xrange( 0, size, step ): # change step to 1 for accuracy
             
             close=kd.query([x,y],1)
-            for x1 in range(0, step):
-                for y1 in range(0, step):
+            for x1 in xrange(0, step):
+                for y1 in xrange(0, step):
                     amatrix[x+x1][y+y1] = close[0]
             
     return amatrix
@@ -382,7 +382,7 @@ def erosion_water( amatrix, its = 10, d = 1.0, maxrat = 0.51, evap = 0.041, sed 
     sumsediment = 0
     sumwater = 0
 
-    for z in range( its ):
+    for z in xrange( its ):
 
         watercap = 0;
 
@@ -400,9 +400,9 @@ def erosion_water( amatrix, its = 10, d = 1.0, maxrat = 0.51, evap = 0.041, sed 
             print 'tick:',z
 
         # now the magical part: moving sediment and water around
-        for x in range( 1, size - 1 ):
+        for x in xrange( 1, size - 1 ):
             
-            for y in range( 1, size - 1 ):
+            for y in xrange( 1, size - 1 ):
                 
                 if( alt ):
                     x1 = amatrix[x-1][y]-amatrix[x][y]+water[x-1][y]-water[x][y]
@@ -501,7 +501,7 @@ def stats_percentile( amatrix ):
         return sort[ min( max( int( ( amatrix.size - 1 ) * percent / 100), 0 ), amatrix.size - 1 ) ]
 
     final = zeros(( 11 )) 
-    for x in range( 0, 11 ):
+    for x in xrange( 0, 11 ):
 
         final[x] = mymatrix[ find_percentile( x * 10 ) ]
 
@@ -514,9 +514,9 @@ def stats_percentile( amatrix ):
 def matrix_crop(amatrix,minimum,maximum):
 
     size = int( amatrix.size ** ( 0.5 ) )
-    for x in range( 0, size ):
+    for x in xrange( 0, size ):
 
-        for y in range( 0, size ):
+        for y in xrange( 0, size ):
 
             amatrix[x][y] = max( minimum, min( maximum, amatrix[x][y] ) )
     return amatrix
@@ -548,8 +548,8 @@ def Perlin(size, scale=2.0, seed=-42):
     per = perlin.SimplexNoise()
     per.randomize(seed)
 
-    for x in range (0,size):
-        for y in range (0,size):
+    for x in xrange (0,size):
+        for y in xrange (0,size):
             perlinMap[x][y] = per.noise2(x*scale/size,y*scale/size)
 
     return perlinMap
@@ -561,7 +561,7 @@ def Perlin(size, scale=2.0, seed=-42):
 def GeneratePerlin(size,layers):
     
     a = Perlin(size)
-    for i in range(1,layers):
+    for i in xrange(1,layers):
 
         a*= 2
         a += Perlin(size,8.0*i)
@@ -583,8 +583,8 @@ class layer(object):
         self.total = 0;
         self.hardness = hardness
 
-        for x in range(0, size):
-            for y in range(0, size):
+        for x in xrange(0, size):
+            for y in xrange(0, size):
                 self.map[x][y] += random.uniform(0.0,height_variance)-height_variance/2.0
                 self.total += self.map[x][y]
 
@@ -593,9 +593,9 @@ class layer(object):
         size = int( self.map.size ** ( 0.5 ) )
         newtotal = 0
         
-        for x in range(0, size):
+        for x in xrange(0, size):
             
-            for y in range(0, size):
+            for y in xrange(0, size):
             
                 newtotal += self.map[x][y]
 
@@ -617,9 +617,9 @@ class layer(object):
         num = 0
         ave = tot/self.map.size*prop
 
-        for x in range(0, size):
+        for x in xrange(0, size):
             
-            for y in range(0, size):
+            for y in xrange(0, size):
 
                 if(self.map[x][y] < ave):
 
@@ -635,9 +635,9 @@ class layer(object):
         num = 0
         ave = tot/self.map.size*prop
 
-        for x in range(0, size):
+        for x in xrange(0, size):
             
-            for y in range(0, size):
+            for y in xrange(0, size):
 
                 if(self.map[x][y] < ave):
 
@@ -653,9 +653,9 @@ class layer(object):
         num = 0
         ave = tot/self.map.size*prop
 
-        for x in range(0, size):
+        for x in xrange(0, size):
             
-            for y in range(0, size):
+            for y in xrange(0, size):
 
                 if(self.map[x][y] > ave):
 
@@ -825,7 +825,7 @@ class map_data(object):
     def spider_mountain(self,layer_index,count,height=100,f=0.91,togo=25):
 
         size = int( self.layers[layer_index].map.size ** ( 0.5 ) )
-        for i in range(0,count):
+        for i in xrange(0,count):
 
             self.layers[layer_index].map = spider_mountain_wrapper(
                 self.layers[layer_index].map,
@@ -921,7 +921,7 @@ class map_data(object):
 
         size = int( self.layers[0].map.size ** ( 0.5 ) )
 
-        for z in range( 0, its ):
+        for z in xrange( 0, its ):
             
             total=0
             start = 1+z%2*(size-3)
@@ -929,13 +929,13 @@ class map_data(object):
             step = 1+z%2*(-2)
             #print start, end, 1+z%2*(-2) 
 
-            for x in range( start, end, step ):
+            for x in xrange( start, end, step ):
     
-                for y in range( end, start, -step ):
+                for y in xrange( end, start, -step ):
                     
                     kernel = zeros((3,3))
-                    for x1 in range( 0, 3 ):
-                        for y1 in range( 0, 3 ):
+                    for x1 in xrange( 0, 3 ):
+                        for y1 in xrange( 0, 3 ):
                             kernel[x1][y1]=self.total_height((x+x1-1,y+y1-1))
                     #print kernel
 
@@ -985,7 +985,7 @@ def main(num_layers):
               layer(size,10,3,0.6),
               layer(size,3,3,0.95))
     
-    for i in range(0,num_layers):
+    for i in xrange(0,num_layers):
         layers = layers + (layer(size,random.uniform(2,5),random.uniform(0,2),random.uniform(0.05,0.95)),)
         print i
     
@@ -995,7 +995,7 @@ def main(num_layers):
     main = map_data(layers)
     main.blur(3)
     main.spider_mountain(2,150)
-    for i in range(0,num_layers,3):
+    for i in xrange(0,num_layers,3):
         main.spider_mountain(i,50)
         print i
 
@@ -1005,14 +1005,14 @@ def main(num_layers):
     
     x = size/2
     y = size/2
-    for j in range (0,300):
+    for j in xrange (0,300):
 
       x = random.randint(0,size)
       dx = random.randint(-2,3)
       y = random.randint(0,size)
       dy = random.randint(-2,3)
       
-      for i in range (0,100):
+      for i in xrange (0,100):
         main.erode(0,(x,y),2.5)
         if(random.random() < 0.6):
             x += dx
@@ -1053,7 +1053,7 @@ def main(num_layers):
     wall = time()
     eros = main.heightmap()
     
-    for i in range(0,4):
+    for i in xrange(0,4):
         q = random.uniform(-0.1,0.1)+1.03
         w = random.uniform(-0.1,0.1)+0.611
         e = random.uniform(-0.005,0.005)+0.0427
@@ -1081,7 +1081,7 @@ def clean_main(size, mountains, num_layers, erosion):
 
     layers = (layer(size,20,10,8.0),)
     
-    for i in range(0,num_layers):
+    for i in xrange(0,num_layers):
         layers += (layer(size,random.uniform(4,7),random.uniform(2,3),random.uniform(1.5,4.0)),)
 
     layers += (layer(size,20,10,0.5),)
@@ -1133,7 +1133,7 @@ def perlin_main(size, mountains, num_layers, erosion):
 
     layers = (layer(size,20,10,8.0),)
     
-    for i in range(0,num_layers):
+    for i in xrange(0,num_layers):
         layers += (layer(size,random.uniform(4,7),random.uniform(2,3),random.uniform(1.5,4.0)),)
 
     layers += (layer(size,20,10,0.5),)

@@ -21,7 +21,7 @@ class WrapFont(object):
     lines = 1
     words = text.split()
     start = 0
-    for i in range(len(words)):
+    for i in xrange(len(words)):
       if start == 0: line = " ".join(words[start:i+1])
       else: line = indent + " ".join(words[start:i+1])
       if self._font.size(line)[0] > self._width:
@@ -39,7 +39,7 @@ class WrapFont(object):
     lines = []
     words = text.split()
     start = 0
-    for i in range(len(words)):
+    for i in xrange(len(words)):
       if start == 0: line = " ".join(words[start:i+1])
       else: line = indent + " ".join(words[start:i+1])
       if self._font.size(line)[0] > self._width:
@@ -72,7 +72,7 @@ class WrapFont(object):
 def embfade(textstring, textsize, amount, displaysize, trgb = [255, 255, 255]):
   displaysurface = pygame.Surface(displaysize)
   font = pygame.font.Font(None, textsize)
-  for i in range(amount):
+  for i in xrange(amount):
     text = font.render(textstring, True, [c / (i + 1) for c in trgb])
     displaysurface.blit(text, [i, i])
   return displaysurface
@@ -94,7 +94,7 @@ def shadow(text, font, color, offset = 1, color2 = None):
 def shadefade(textstring, textsize, amount, displaysize, trgb=(255,255,255)):
   displaysurface = pygame.Surface(displaysize, SRCALPHA, 32)
   font = pygame.font.Font(None, textsize)
-  for i in range(amount - 1, 0, -1):
+  for i in xrange(amount - 1, 0, -1):
     text = font.render(textstring, True, [c / i for c in trgb])
     displaysurface.blit(text, [i, i])
   return displaysurface
@@ -184,7 +184,7 @@ class TextProgress(object):
 # Find the appropriate font size to fit string into max_width pixels,
 # that's at most max_size, and at least 6.
 def max_size(string, max_width, max_size):
-  for size in range(max_size, 0, -1):
+  for size in xrange(max_size, 0, -1):
     f = pygame.font.Font(None, size)
     if f.size(string)[0] < max_width: return f
   return pygame.font.Font(None, 6)

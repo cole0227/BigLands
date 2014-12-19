@@ -32,11 +32,11 @@ window_surface = None
 
 global basic_font
 basic_font = []
-for i in range (0, 12):
+for i in xrange (0, 12):
     basic_font.append(pygame.font.SysFont("twcencondensed", i*7+12))
 global heavy_font
 heavy_font = []
-for i in range (0, 12):
+for i in xrange (0, 12):
     heavy_font.append(pygame.font.SysFont("twcen", i*7+12))
 
 global current_screen

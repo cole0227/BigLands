@@ -26,8 +26,8 @@ class CA_CaveFactory:
         x = 0
         row = ""
 
-        for r in range(0,self.__length):
-            for c in range(0,self.__width):
+        for r in xrange(0,self.__length):
+            for c in xrange(0,self.__width):
                 if self.__map[r][c] in (WALL,PERM_WALL):
                     sys.stdout.write('#')
                 else:
@@ -37,8 +37,8 @@ class CA_CaveFactory:
             sys.stdout.flush()
 
     def gen_map(self):
-        for r in range(1,self.__length-1):
-            for c in range(1,self.__width-1):
+        for r in xrange(1,self.__length-1):
+            for c in xrange(1,self.__width-1):
                 wall_count = self.__adj_wall_count(r,c)
 
                 if self.__map[r][c] == FLOOR:
@@ -54,18 +54,18 @@ class CA_CaveFactory:
     # make all border squares walls
     # This could be moved to a superclass
     def __set_border(self):
-        for j in range(0,self.__length):
+        for j in xrange(0,self.__length):
             self.__map[j][0] = PERM_WALL
             self.__map[j][self.__width-1] = PERM_WALL
 
-        for j in range(0,self.__width):
+        for j in xrange(0,self.__width):
             self.__map[0][j] = PERM_WALL
             self.__map[self.__length-1][j] = PERM_WALL
 
     def __gen_initial_map(self,initial_open):
-        for r in range(0,self.__length):
+        for r in xrange(0,self.__length):
             row = []
-            for c in range(0,self.__width):
+            for c in xrange(0,self.__width):
                 row.append(WALL)
             self.__map.append(row)
 
@@ -92,8 +92,8 @@ class CA_CaveFactory:
 
     def __join_rooms(self):
         # divide the square into equivalence classes
-        for r in range(1,self.__length-1):
-            for c in range(1,self.__width-1):
+        for r in xrange(1,self.__length-1):
+            for c in xrange(1,self.__width-1):
                 if self.__map[r][c] == FLOOR:
                     self.__union_adj_sqr(r,c)
 
@@ -177,9 +177,9 @@ class WeightedCaveFactory(CA_CaveFactory):
         CA_CaveFactory.__init__(self,length,width,initial_open)
 
     def __gen_initial_map(self,initial_open):
-        for r in range(0,self.__length):
+        for r in xrange(0,self.__length):
             row = []
-            for c in range(0,self.__width):
+            for c in xrange(0,self.__width):
                 row.append(WALL)
             self.__map.append(row)
 

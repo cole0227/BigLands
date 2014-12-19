@@ -106,8 +106,8 @@ class item_generator(object):
 	def regen(self):
 
 		self.d = []
-		for z in range(len(self.m_bonus_count)):
-			for i in range(self.m_bonus_count[z]):
+		for z in xrange(len(self.m_bonus_count)):
+			for i in xrange(self.m_bonus_count[z]):
 				self.d.append(make_item(z,self.m_level))
 		#print len(self.d)
 
@@ -131,10 +131,10 @@ globals.icons_items = Sprite_Sheet("Assets/PD/Free_Icons.png")
 globals.icons_items_outlines = pygame.image.load("Assets/PD/Free_Icons_Outlines.png")
 globals.icons_items_outlines.set_colorkey((0,0,0))
 globals.icons_items_outlines = globals.icons_items_outlines.convert_alpha()
-for i in range(1):
+for i in xrange(1):
 	i = item_generator(0)
 	print i
-	for j in range(12):
+	for j in xrange(12):
 		item = make_item(random.randint(4,4),random.randint(5,6))
 		pygame.image.save(item[2],item[0]+".png")
 		item[1].level_up(100)

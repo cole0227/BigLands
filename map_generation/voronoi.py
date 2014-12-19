@@ -632,7 +632,7 @@ class PriorityQueue(object):
         self.count = 0
         self.minidx = 0
         self.hash = []
-        for i in range(self.hashsize):
+        for i in xrange(self.hashsize):
             self.hash.append(Halfedge())
 
     def __len__(self):

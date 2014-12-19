@@ -15,8 +15,8 @@ def gaussian_kernel(rows, columns, spread):
     # Pre-calculate
     a = 1 / (2 * pow(spread, 2))
     # Iterate matrix
-    for r in range(rows):
-        for c in range(columns):
+    for r in xrange(rows):
+        for c in xrange(columns):
             # Shift Gaussian to centre
             r_shift = (r - r_centre)
             c_shift = (c - c_centre)

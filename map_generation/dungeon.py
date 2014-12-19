@@ -72,8 +72,8 @@ def generate(cellsX, cellsY, cellSize=8, rounded=False):
             other.connected = True
 
     cells = {}
-    for y in range(cellsY):
-        for x in range(cellsX):
+    for y in xrange(cellsY):
+        for x in xrange(cellsX):
             c = Cell(x, y, len(cells))
             cells[(c.x, c.y)] = c
 
@@ -134,16 +134,16 @@ def generate(cellsX, cellsY, cellSize=8, rounded=False):
         y = (cell.y * cellSize) + random.randint(1, cellSize - height - 1)
         floorTiles = []
         if(rounded):
-            for i in range(width):
-                for j in range(height):
+            for i in xrange(width):
+                for j in xrange(height):
 
                     # ignore the corners
                     if(not(i+j==0 or (i==0 and j == width-1) or (i == width-1 and j==0) or (i+j == width*2-2))):
 
                         floorTiles.append((x + i, y + j))
         else:
-            for i in range(width):
-                for j in range(height):
+            for i in xrange(width):
+                for j in xrange(height):
                     floorTiles.append((x + i, y + j))
 
         cell.room = floorTiles
@@ -173,8 +173,8 @@ def generate(cellsX, cellsY, cellSize=8, rounded=False):
     tiles = {}
     tilesX = cellsX * cellSize
     tilesY = cellsY * cellSize
-    for x in range(tilesX):
-        for y in range(tilesY):
+    for x in xrange(tilesX):
+        for y in xrange(tilesY):
             tiles[(x, y)] = "#"
     for xy in itertools.chain.from_iterable(rooms):
         tiles[xy] = "."
@@ -196,8 +196,8 @@ def generate(cellsX, cellsY, cellSize=8, rounded=False):
     tiles[stairsUp] = "<"
     tiles[stairsDown] = ">"
 
-    for y in range(tilesY):
-        for x in range(tilesX):
+    for y in xrange(tilesY):
+        for x in xrange(tilesX):
             pass
             #sys.stdout.write(tiles[(x, y)])
             #sys.stdout.write("\n")
@@ -214,8 +214,8 @@ def dungeon_print(tiles, cellsX, cellsY=-1, cellSize=8):
     if(cellsY==-1):
         cellsY = cellsX
 
-    for y in range(cellsY*cellSize):
-        for x in range(cellsX*cellSize):
+    for y in xrange(cellsY*cellSize):
+        for x in xrange(cellsX*cellSize):
             sys.stdout.write(tiles[(x,y)])
         sys.stdout.write("\n")
 
@@ -226,8 +226,8 @@ def dungeon_print_delta(tiles, tiles2, cellsX, cellsY=-1, cellSize=8):
     if(cellsY==-1):
         cellsY = cellsX
 
-    for y in range(cellsY*cellSize):
-        for x in range(cellsX*cellSize):
+    for y in xrange(cellsY*cellSize):
+        for x in xrange(cellsX*cellSize):
             if(tiles[(x,y)] != tiles2[(x,y)]):
                 sys.stdout.write("O")
             else:
@@ -342,10 +342,10 @@ def dungeon_erode(inputTiles):
                 tiles[xy] = "."
     
     #re-edge the map
-    for x in range(0,maxX+1):
+    for x in xrange(0,maxX+1):
         tiles[(x,maxY)] = "#"
     
-    for y in range(0,maxY+1):
+    for y in xrange(0,maxY+1):
         tiles[(maxX,y)] = "#"
 
     return tiles
@@ -354,9 +354,9 @@ def dungeon_erode(inputTiles):
 def dungeon_make(cellsX, cellsY, chunk_size=8, roundedness=0, erode=0):
 
     tiles = generate(cellsX, cellsY, chunk_size, roundedness>0)
-    for i in range(roundedness):
+    for i in xrange(roundedness):
         tiles = round_out_dungeon(tiles)
-    for i in range(erode):
+    for i in xrange(erode):
         tiles = dungeon_erode(tiles)
     return tiles
 

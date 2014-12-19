@@ -326,7 +326,7 @@ class Actor_Unit(Unit):
 
 def random_bonus(mini,maxi,count):
     u = Unit({})
-    for i in range(0,count):
+    for i in xrange(0,count):
 
         #this list contains all the heroic stats 3 times
         stat = random.choice(("health","health_regeneration","armour","attack_speed","attack_damage","movement_speed","critical_chance","critical_damage","dodge_chance","toughness","agility","constitution","finesse","might","precision","toughness","agility","constitution","finesse","might","precision","toughness","agility","constitution","finesse","might","precision"))
@@ -343,7 +343,7 @@ def random_bonus(mini,maxi,count):
 
 def random_bonus_combat(mini,maxi,count):
     u = Unit({})
-    for i in range(0,count):
+    for i in xrange(0,count):
 
         #this list contains no heroic stats
         stat = random.choice(("health","health_regeneration","armour","attack_speed","attack_damage","movement_speed","critical_chance","critical_damage","dodge_chance"))
@@ -360,7 +360,7 @@ def random_bonus_combat(mini,maxi,count):
 
 def random_bonus_heroic(mini,maxi,count):
     u = Unit({})
-    for i in range(0,count):
+    for i in xrange(0,count):
         u.merge(Unit({random.choice(("toughness","agility","constitution","finesse","might","precision")):(random.randint(mini,maxi),0)}))
     return u
 
@@ -458,7 +458,7 @@ if __name__ == '__main__':
     player1 = source_unit_knight.copy()
     player2 = source_unit_warlock.copy()
 
-    for i in range(0,1):
+    for i in xrange(0,1):
         player1.level_up(250)
         player2.level_up(250)
         print player1

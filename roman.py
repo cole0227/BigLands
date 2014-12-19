@@ -9,7 +9,7 @@ def int_to_roman(input):
    ints = (1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,  4,   1)
    nums = ('M',  'CM', 'D', 'CD','C', 'XC','L','XL','X','IX','V','IV','I')
    result = ""
-   for i in range(len(ints)):
+   for i in xrange(len(ints)):
       count = int(input / ints[i])
       result += nums[i] * count
       input -= ints[i] * count
@@ -27,7 +27,7 @@ def roman_to_int(input):
    for c in input:
       if not c in nums:
          raise ValueError, "input is not a valid roman numeral: %s" % input
-   for i in range(len(input)):
+   for i in xrange(len(input)):
       c = input[i]
       value = ints[nums.index(c)]
       # If the next place holds a larger number, this value is negative.
